@@ -24,4 +24,7 @@ phosphor_ledmanager_CFLAGS =  $(SDBUSPLUS_CFLAGS) \
                               $(PHOSPHOR_LOGGING_CFLAGS) \
                               $(PHOSPHOR_DBUS_INTERFACES_CFLAGS)
 
+ledconfigdir = ${datadir}/phosphor-led-manager
+ledconfig_DATA = configs/led-group-config.json
+
 SUBDIRS = test fault-monitor
