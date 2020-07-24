@@ -179,7 +179,7 @@
          ]
       },
       {
-         "group" : "Fan2_fault",
+         "group" : "fan2_fault",
          "members" : [
             {
                "Name" : "fan2",
