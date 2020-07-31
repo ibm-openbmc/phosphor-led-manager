@@ -4,7 +4,7 @@
          "group" : "bmc_booted",
          "members" : [
             {
-               "Name" : "front_sys_powron0",
+               "Name" : "front_sys_pwron0",
                "Action" : "Blink",
                "DutyOn" : 50,
                "Period" : 1000,
@@ -16,7 +16,7 @@
          "group" : "power_on",
          "members" : [
             {
-               "Name" : "front_sys_powron0",
+               "Name" : "front_sys_pwron0",
                "Action" : "On",
                "DutyOn" : 50,
                "Period" : 0,
