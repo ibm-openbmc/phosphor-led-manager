@@ -25,7 +25,19 @@
          ]
       },
       {
-         "group" : "system_attention_indicator",
+         "group" : "partition_system_attention_indicator",
+         "members" : [
+            {
+               "Name" : "front_check_log0",
+               "Action" : "On",
+               "DutyOn" : 50,
+               "Period" : 0,
+               "Priority" : "Blink"
+            }
+         ]
+      },
+      {
+         "group" : "platform_system_attention_indicator",
          "members" : [
             {
                "Name" : "front_check_log0",
