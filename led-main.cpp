@@ -1,5 +1,6 @@
 #include "config.h"
 
+#include "custom_dbus.hpp"
 #include "group.hpp"
 #ifdef LED_USE_JSON
 #include "json-parser.hpp"
@@ -37,7 +38,7 @@ int main(void)
     sdbusplus::server::manager::manager objManager(bus, OBJPATH);
 
     /** @brief vector of led groups */
-    std::vector<std::unique_ptr<phosphor::led::Group>> groups;
+    // std::vector<std::unique_ptr<phosphor::led::Group>> groups;
 
     /** @brief store and re-store Group */
     phosphor::led::Serialize serialize(SAVED_GROUPS_FILE);
@@ -45,10 +46,15 @@ int main(void)
 #ifdef USE_LAMP_TEST
     phosphor::led::LampTest lampTest(event, manager);
 
-    groups.emplace_back(std::make_unique<phosphor::led::Group>(
-        bus, LAMP_TEST_OBJECT, manager, serialize,
+    phosphor::led::CustomDBus::getCustomDBus().setLedGroup(
+        LAMP_TEST_OBJECT, manager, serialize,
         std::bind(std::mem_fn(&phosphor::led::LampTest::requestHandler),
-                  &lampTest, std::placeholders::_1, std::placeholders::_2)));
+                  &lampTest, std::placeholders::_1, std::placeholders::_2));
+
+    // groups.emplace_back(std::make_unique<phosphor::led::Group>(
+    //     bus, LAMP_TEST_OBJECT, manager, serialize,
+    //     std::bind(std::mem_fn(&phosphor::led::LampTest::requestHandler),
+    //               &lampTest, std::placeholders::_1, std::placeholders::_2)));
 
     // Register a lamp test method in the manager class, and call this method
     // when the lamp test is started
@@ -60,8 +66,10 @@ int main(void)
     /** Now create so many dbus objects as there are groups */
     for (auto& grp : systemLedMap)
     {
-        groups.emplace_back(std::make_unique<phosphor::led::Group>(
-            bus, grp.first, manager, serialize));
+        // groups.emplace_back(std::make_unique<phosphor::led::Group>(
+        //     bus, grp.first, manager, serialize));
+        phosphor::led::CustomDBus::getCustomDBus().setLedGroup(
+            grp.first, manager, serialize);
     }
 
     // Attach the bus to sd_event to service user requests

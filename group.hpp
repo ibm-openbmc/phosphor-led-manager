@@ -64,6 +64,13 @@ class Group :
      */
     bool asserted(bool value) override;
 
+    /** @brief Update the Asserted property
+     *
+     *  @param[in]  value   -  True or False
+     *  @return             -  Success or exception thrown
+     */
+    bool updateAsserted(bool value);
+
   private:
     /** @brief Path of the group instance */
     std::string path;

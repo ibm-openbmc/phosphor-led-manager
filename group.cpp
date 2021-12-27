@@ -2,11 +2,23 @@
 
 #include "group.hpp"
 
+#include "custom_dbus.hpp"
+
 #include <sdbusplus/message.hpp>
+
+#ifdef IBM_SAI
+#include "ibm-sai.hpp"
+#endif
+
 namespace phosphor
 {
 namespace led
 {
+
+bool Group::updateAsserted(bool value)
+{
+    return sdbusplus::xyz::openbmc_project::Led::server::Group::asserted(value);
+}
 
 /** @brief Overloaded Property Setter function */
 bool Group::asserted(bool value)
@@ -38,6 +50,22 @@ bool Group::asserted(bool value)
 
     // Store asserted state
     serialize.storeGroups(path, result);
+
+#ifdef IBM_SAI
+    if (phosphor::led::ibm::setOperationalStatus(path, !value))
+    {
+        if (path == phosphor::led::ibm::PARTITION_SAI)
+        {
+            phosphor::led::CustomDBus::getCustomDBus().updateAsserted(
+                phosphor::led::ibm::PLATFORM_SAI, value);
+        }
+        else
+        {
+            phosphor::led::CustomDBus::getCustomDBus().updateAsserted(
+                phosphor::led::ibm::PARTITION_SAI, value);
+        }
+    }
+#endif
 
     // If something does not go right here, then there should be an sdbusplus
     // exception thrown.
