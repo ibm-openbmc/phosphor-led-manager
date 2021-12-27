@@ -1,4 +1,10 @@
+#include "config.h"
+
 #include "operational-status-monitor.hpp"
+
+#ifdef IBM_SAI
+#include "ibm-sai.hpp"
+#endif
 
 #include <phosphor-logging/elog.hpp>
 #include <phosphor-logging/lg2.hpp>
@@ -91,6 +97,14 @@ void Monitor::updateAssertedProperty(
 {
     for (const auto& path : ledGroupPaths)
     {
+#ifdef IBM_SAI
+        if (path == phosphor::led::ibm::PARTITION_SAI ||
+            path == phosphor::led::ibm::PLATFORM_SAI)
+        {
+            continue;
+        }
+#endif
+
         try
         {
             // Call "Group Asserted --> true" if the value of Functional is
