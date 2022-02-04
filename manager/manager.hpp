@@ -124,6 +124,17 @@ class Manager
         std::function<bool(ActionSet& ledsAssert, ActionSet& ledsDeAssert)>
             callBack);
 
+    /** @brief Check for asserted state by group path.
+     *
+     * @param[in]  path    -  LED group path
+     *
+     * @return             -  Asserted state as a bool
+     */
+    bool isAsserted(const std::string& path) const
+    {
+        return assertedGroups.contains(&ledMap.at(path));
+    }
+
   private:
     /** @brief sdbusplus handler */
     sdbusplus::bus_t& bus;

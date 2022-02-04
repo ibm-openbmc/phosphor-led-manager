@@ -6,6 +6,12 @@ sources = [
     '../utils.cpp',
 ]
 
+if get_option('monitor-sai-status').enabled()
+    sources += [
+        'ibm-sai.cpp'
+    ]
+endif
+
 if get_option('use-json').disabled()
     led_gen_hpp = custom_target(
         'led-gen.hpp',

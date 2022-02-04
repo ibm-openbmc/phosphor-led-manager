@@ -5,6 +5,11 @@
 #include "ledlayout.hpp"
 
 #include <sdbusplus/message.hpp>
+
+#ifdef IBM_SAI
+#include "ibm-sai.hpp"
+#endif
+
 namespace phosphor
 {
 namespace led
@@ -40,6 +45,30 @@ bool Group::asserted(bool value)
 
     // Store asserted state
     serialize.storeGroups(path, result);
+
+#ifdef IBM_SAI
+    // When setting the associated FRU's operational status for
+    // platform and partition SAI, we need to be sure that when
+    // the status is being set to good, both platform and partition
+    // SAI group objects are de-asserted.
+    std::string otherPath;
+    if (path == phosphor::led::ibm::PARTITION_SAI)
+    {
+        otherPath = phosphor::led::ibm::PLATFORM_SAI;
+    }
+    else if (path == phosphor::led::ibm::PLATFORM_SAI)
+    {
+        otherPath = phosphor::led::ibm::PARTITION_SAI;
+    }
+
+    if (!otherPath.empty())
+    {
+        if (value || (!value && !manager.isAsserted(otherPath)))
+        {
+            phosphor::led::ibm::setOperationalStatus(path, !value);
+        }
+    }
+#endif
 
     // If something does not go right here, then there should be an sdbusplus
     // exception thrown.
