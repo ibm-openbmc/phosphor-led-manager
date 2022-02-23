@@ -79,21 +79,21 @@
          "members" : [
             {
                "Name" : "pca955x_front_sys_id0",
-               "Action" : "Blink",
+               "Action" : "On",
                "DutyOn" : 50,
                "Period" : 1000,
                "Priority" : "Blink"
             },
             {
                "Name" : "rear_enc_id0",
-               "Action" : "Blink",
+               "Action" : "On",
                "DutyOn" : 50,
                "Period" : 1000,
                "Priority" : "Blink"
             },
             {
                "Name" : "virtual_enc_id",
-               "Action" : "Blink",
+               "Action" : "On",
                "DutyOn" : 50,
                "Period" : 1000,
                "Priority" : "Blink"
@@ -698,7 +698,7 @@
          "group" : "cpu1_vrm0_fault",
          "members" : [
             {
-               "Name" : "pca955x_cpu1_vrm0",
+               "Name" : "pca955x_cpu_vrm1",
                "Action" : "On",
                "DutyOn" : 50,
                "Period" : 0,
@@ -731,7 +731,7 @@
          "group" : "cpu1_vrm0_identify",
          "members" : [
             {
-               "Name" : "pca955x_cpu1_vrm0",
+               "Name" : "pca955x_cpu_vrm1",
                "Action" : "Blink",
                "DutyOn" : 50,
                "Period" : 1000,

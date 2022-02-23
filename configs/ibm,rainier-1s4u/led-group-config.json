@@ -79,21 +79,21 @@
          "members" : [
             {
                "Name" : "pca955x_front_sys_id0",
-               "Action" : "Blink",
+               "Action" : "On",
                "DutyOn" : 50,
                "Period" : 1000,
                "Priority" : "Blink"
             },
             {
                "Name" : "rear_enc_id0",
-               "Action" : "Blink",
+               "Action" : "On",
                "DutyOn" : 50,
                "Period" : 1000,
                "Priority" : "Blink"
             },
             {
                "Name" : "virtual_enc_id",
-               "Action" : "Blink",
+               "Action" : "On",
                "DutyOn" : 50,
                "Period" : 1000,
                "Priority" : "Blink"
