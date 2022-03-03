@@ -3434,7 +3434,7 @@
          ]
       },
       {
-         "group" : "pca955x_pcieslot9_identify",
+         "group" : "pcieslot9_identify",
          "members" : [
             {
                "Name" : "pcieslot9",
