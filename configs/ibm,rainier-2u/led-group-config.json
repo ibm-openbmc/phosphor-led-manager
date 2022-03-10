@@ -4144,7 +4144,7 @@
                "Priority" : "Blink"
             },
             {
-               "Name" : "front_enc_fault1",
+               "Name" : "pca955x_front_enc_fault1",
                "Action" : "On",
                "DutyOn" : 50,
                "Period" : 0,
@@ -4184,7 +4184,7 @@
                "Priority" : "Blink"
             },
             {
-               "Name" : "front_sys_id0",
+               "Name" : "pca955x_front_sys_id0",
                "Action" : "On",
                "DutyOn" : 50,
                "Period" : 0,
@@ -4224,7 +4224,7 @@
                "Priority" : "Blink"
             },
             {
-               "Name" : "front_enc_fault1",
+               "Name" : "pca955x_front_enc_fault1",
                "Action" : "On",
                "DutyOn" : 50,
                "Period" : 0,
@@ -4264,7 +4264,7 @@
                "Priority" : "Blink"
             },
             {
-               "Name" : "front_sys_id0",
+               "Name" : "pca955x_front_sys_id0",
                "Action" : "On",
                "DutyOn" : 50,
                "Period" : 0,
@@ -4627,7 +4627,7 @@
                "Priority" : "Blink"
             },
             {
-               "Name" : "front_enc_fault1",
+               "Name" : "pca955x_front_enc_fault1",
                "Action" : "On",
                "DutyOn" : 50,
                "Period" : 0,
@@ -4660,7 +4660,7 @@
                "Priority" : "Blink"
             },
             {
-               "Name" : "front_sys_id0",
+               "Name" : "pca955x_front_sys_id0",
                "Action" : "On",
                "DutyOn" : 50,
                "Period" : 0,
@@ -5914,7 +5914,7 @@
                "Priority" : "Blink"
             },
             {
-               "Name" : "front_sys_id0",
+               "Name" : "pca955x_front_sys_id0",
                "Action" : "On",
                "DutyOn" : 50,
                "Period" : 0,
@@ -6441,6 +6441,32 @@
                "Period" : 1000,
                "Priority" : "Blink"
             },
+            {
+               "Name" : "pca955x_front_sys_id0",
+               "Action" : "On",
+               "DutyOn" : 50,
+               "Period" : 0,
+               "Priority" : "Blink"
+            },
+            {
+               "Name" : "rear_enc_id0",
+               "Action" : "On",
+               "DutyOn" : 50,
+               "Period" : 0,
+               "Priority" : "Blink"
+            },
+            {
+               "Name" : "virtual_enc_id",
+               "Action" : "On",
+               "DutyOn" : 50,
+               "Period" : 0,
+               "Priority" : "Blink"
+            }
+         ]
+      },
+      {
+         "group" : "misc_identify",
+         "members" : [
             {
                "Name" : "pca955x_front_sys_id0",
                "Action" : "On",
