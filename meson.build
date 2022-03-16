@@ -55,10 +55,10 @@ realpath_prog = find_program('realpath')
 
 cpp = meson.get_compiler('cpp')
 if cpp.has_header('nlohmann/json.hpp')
-    nlohmann_json = declare_dependency()
+    nlohmann_json_dep = declare_dependency()
 else
     subproject('nlohmann', required: false)
-    nlohmann_json = declare_dependency(
+    nlohmann_json_dep = declare_dependency(
         include_directories: [
             'subprojects/nlohmann/single_include',
             'subprojects/nlohmann/single_include/nlohmann',
@@ -74,6 +74,7 @@ else
         fallback: [ 'CLI11', 'CLI11_dep' ],
     )
 endif
+
 
 #Get Cereal dependency.
 cereal_dep = dependency('cereal', required: false)
@@ -98,7 +99,8 @@ deps = [
     sdeventplus_dep,
     phosphor_logging_dep,
     phosphor_dbus_interfaces_dep,
-    nlohmann_json
+    nlohmann_json_dep,
+    cereal_dep,
 ]
 
 subdir('manager')
