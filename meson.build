@@ -113,12 +113,41 @@ foreach g : generated_sources generated_others
     endforeach
 endforeach
 
+if cpp.has_header('CLI/CLI.hpp')
+    CLI11_dep = declare_dependency()
+else
+    CLI11_dep = dependency(
+        'CLI11',
+        fallback: [ 'CLI11', 'CLI11_dep' ],
+    )
+endif
+
+# Get Cereal dependency.
+cereal_dep = dependency('cereal', required: false)
+has_cereal = cpp.has_header_symbol(
+    'cereal/cereal.hpp',
+    'cereal::specialize',
+    dependencies: cereal_dep,
+    required: false)
+if not has_cereal
+    cereal_opts = import('cmake').subproject_options()
+    cereal_opts.add_cmake_defines({'BUILD_TESTS': 'OFF'})
+    cereal_proj = import('cmake').subproject(
+        'cereal',
+        options: cereal_opts,
+        required: false)
+    assert(cereal_proj.found(), 'cereal is required')
+    cereal_dep = cereal_proj.dependency('cereal')
+endif
+
 deps = [
+    CLI11_dep,
+    cereal_dep,
+    nlohmann_json_dep,
+    phosphor_dbus_interfaces_dep,
+    phosphor_logging_dep,
     sdbusplus_dep,
     sdeventplus_dep,
-    phosphor_logging_dep,
-    phosphor_dbus_interfaces_dep,
-    nlohmann_json
 ]
 
 subdir('manager')

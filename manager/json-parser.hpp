@@ -28,7 +28,7 @@ using PriorityMap = std::map<std::string, phosphor::led::Layout::Action>;
  *
  *  @return const Json - Json object
  */
-const Json readJson(const fs::path& path)
+Json readJson(const fs::path& path)
 {
 
     if (!fs::exists(path) || fs::is_empty(path))
@@ -98,18 +98,17 @@ void validatePriority(const std::string& name,
     }
 }
 
-/** @brief Load JSON config and return led map
+/** @brief Load JSON config and return led map (JSON version 1)
  *
  *  @return LedMap - Generated an std::map of LedAction
  */
-const LedMap loadJsonConfig(const fs::path& path)
+const LedMap loadJsonConfigV1(const Json& json)
 {
     LedMap ledMap{};
     PriorityMap priorityMap{};
 
     // define the default JSON as empty
     const Json empty{};
-    auto json = readJson(path);
     auto leds = json.value("leds", empty);
 
     for (const auto& entry : leds)
@@ -147,31 +146,43 @@ const LedMap loadJsonConfig(const fs::path& path)
     return ledMap;
 }
 
-/** @brief Get led map from LED groups JSON config
+/** @brief Load JSON config and return led map
  *
  *  @return LedMap - Generated an std::map of LedAction
  */
-const LedMap getSystemLedMap()
+const LedMap loadJsonConfig(const fs::path& path)
 {
-    // Get a new Dbus
-    auto bus = sdbusplus::bus::new_bus();
+    auto json = readJson(path);
 
-    // Get a new event loop
-    auto event = sdeventplus::Event::get_new();
-
-    // Attach the bus to sd_event to service user requests
-    bus.attach_event(event.get(), SD_EVENT_PRIORITY_IMPORTANT);
-    phosphor::led::JsonConfig jsonConfig(bus, event);
-
-    // The event loop will be terminated from inside of a function in JsonConfig
-    // after finding the configuration file
-    if (jsonConfig.getConfFile().empty())
+    auto version = json.value("version", 1);
+    switch (version)
     {
-        event.loop();
+        case 1:
+            return loadJsonConfigV1(json);
+
+        default:
+            lg2::error("Unsupported JSON Version: {VERSION}", "VERSION",
+                       version);
+            throw std::runtime_error("Unsupported version");
     }
 
-    // Detach the bus from its sd_event event loop object
-    bus.detach_event();
+    return LedMap{};
+}
 
-    return loadJsonConfig(jsonConfig.getConfFile());
+/** @brief Get led map from LED groups JSON config
+ *
+ *  @param[in] config - Path to the JSON config.
+ *  @return LedMap - Generated an std::map of LedAction
+ *
+ *  @note if config is an empty string, daemon will interrogate dbus for
+ *        compatible strings.
+ */
+const LedMap getSystemLedMap(fs::path config)
+{
+    if (config.empty())
+    {
+        config = phosphor::led::getJsonConfig();
+    }
+
+    return loadJsonConfig(config);
 }
