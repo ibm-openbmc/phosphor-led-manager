@@ -71,20 +71,17 @@ class Manager
         return left.name == right.name;
     }
 
-    using group = std::set<phosphor::led::Layout::LedAction>;
-    using LedLayout = std::unordered_map<std::string, group>;
-
     /** @brief static global map constructed at compile time */
-    const LedLayout& ledMap;
+    const GroupMap& ledMap;
 
     /** @brief Refer the user supplied LED layout and sdbusplus handler
      *
      *  @param [in] bus       - sdbusplus handler
-     *  @param [in] LedLayout - LEDs group layout
+     *  @param [in] GroupMap - LEDs group layout
      *  @param [in] Event    - sd event handler
      */
     Manager(
-        sdbusplus::bus_t& bus, const LedLayout& ledLayout,
+        sdbusplus::bus_t& bus, const GroupMap& ledLayout,
         const sdeventplus::Event& event = sdeventplus::Event::get_default()) :
         ledMap(ledLayout),
         bus(bus), timer(event, [this](auto&) { driveLedsHandler(); })
@@ -102,8 +99,8 @@ class Manager
      *
      *  @return                   -  Success or exception thrown
      */
-    bool setGroupState(const std::string& path, bool assert, group& ledsAssert,
-                       group& ledsDeAssert);
+    bool setGroupState(const std::string& path, bool assert,
+                       ActionSet& ledsAssert, ActionSet& ledsDeAssert);
 
     /** @brief Finds the set of LEDs to operate on and executes action
      *
@@ -113,7 +110,7 @@ class Manager
      *
      *  @return: None
      */
-    void driveLEDs(group& ledsAssert, group& ledsDeAssert);
+    void driveLEDs(ActionSet& ledsAssert, ActionSet& ledsDeAssert);
 
     /** @brief Chooses appropriate action to be triggered on physical LED
      *  and calls into function that applies the actual action.
@@ -133,7 +130,8 @@ class Manager
      *  @param[in]  callBack   -  Custom callback when enabled lamp test
      */
     void setLampTestCallBack(
-        std::function<bool(group& ledsAssert, group& ledsDeAssert)> callBack);
+        std::function<bool(ActionSet& ledsAssert, ActionSet& ledsDeAssert)>
+            callBack);
 
     /** @brief Check for asserted state by group path.
      *
@@ -157,28 +155,28 @@ class Manager
     DBusHandler dBusHandler;
 
     /** @brief Pointers to groups that are in asserted state */
-    std::set<const group*> assertedGroups;
+    std::set<const ActionSet*> assertedGroups;
 
     /** @brief Contains the highest priority actions for all
      *         asserted LEDs.
      */
-    group currentState;
+    ActionSet currentState;
 
     /** @brief Contains the set of all actions for asserted LEDs */
-    group combinedState;
+    ActionSet combinedState;
 
     /** @brief Custom callback when enabled lamp test */
-    std::function<bool(group& ledsAssert, group& ledsDeAssert)>
+    std::function<bool(ActionSet& ledsAssert, ActionSet& ledsDeAssert)>
         lampTestCallBack;
 
     /** @brief Timer used for LEDs handler callback*/
     sdeventplus::utility::Timer<sdeventplus::ClockId::Monotonic> timer;
 
     /** @brief Contains the required set of assert LEDs action */
-    group reqLedsAssert;
+    ActionSet reqLedsAssert;
 
     /** @brief Contains the required set of deassert LEDs action */
-    group reqLedsDeAssert;
+    ActionSet reqLedsDeAssert;
 
     /** @brief LEDs handler callback */
     void driveLedsHandler();
