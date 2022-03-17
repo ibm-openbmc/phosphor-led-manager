@@ -2,7 +2,7 @@
 #include <sdbusplus/server.hpp>
 
 #include <cstdint>
-#include <map>
+#include <unordered_map>
 #include <vector>
 namespace phosphor
 {
@@ -30,7 +30,7 @@ using PropertyValue =
 using DbusProperty = std::string;
 
 // The Map to constructs all properties values of the interface
-using PropertyMap = std::map<DbusProperty, PropertyValue>;
+using PropertyMap = std::unordered_map<DbusProperty, PropertyValue>;
 
 /**
  *  @class DBusHandler
