@@ -9727,7 +9727,7 @@
          ]
       },
       {
-         "group" : "misc_identify",
+         "group" : "connector0_identify",
          "members" : [
             {
                "Name" : "pca955x_front_sys_id0",
@@ -9737,7 +9737,345 @@
                "Priority" : "Blink"
             },
             {
-               "Name" : "rear_enc_id0",
+               "Name" : "led_rear_enc_id0",
+               "Action" : "On",
+               "DutyOn" : 50,
+               "Period" : 0,
+               "Priority" : "Blink"
+            },
+            {
+               "Name" : "virtual_enc_id",
+               "Action" : "On",
+               "DutyOn" : 50,
+               "Period" : 0,
+               "Priority" : "Blink"
+            }
+         ]
+      },
+      {
+         "group" : "connector1_identify",
+         "members" : [
+            {
+               "Name" : "pca955x_front_sys_id0",
+               "Action" : "On",
+               "DutyOn" : 50,
+               "Period" : 0,
+               "Priority" : "Blink"
+            },
+            {
+               "Name" : "led_rear_enc_id0",
+               "Action" : "On",
+               "DutyOn" : 50,
+               "Period" : 0,
+               "Priority" : "Blink"
+            },
+            {
+               "Name" : "virtual_enc_id",
+               "Action" : "On",
+               "DutyOn" : 50,
+               "Period" : 0,
+               "Priority" : "Blink"
+            }
+         ]
+      },
+      {
+         "group" : "connector2_identify",
+         "members" : [
+            {
+               "Name" : "pca955x_front_sys_id0",
+               "Action" : "On",
+               "DutyOn" : 50,
+               "Period" : 0,
+               "Priority" : "Blink"
+            },
+            {
+               "Name" : "led_rear_enc_id0",
+               "Action" : "On",
+               "DutyOn" : 50,
+               "Period" : 0,
+               "Priority" : "Blink"
+            },
+            {
+               "Name" : "virtual_enc_id",
+               "Action" : "On",
+               "DutyOn" : 50,
+               "Period" : 0,
+               "Priority" : "Blink"
+            }
+         ]
+      },
+      {
+         "group" : "connector3_identify",
+         "members" : [
+            {
+               "Name" : "pca955x_front_sys_id0",
+               "Action" : "On",
+               "DutyOn" : 50,
+               "Period" : 0,
+               "Priority" : "Blink"
+            },
+            {
+               "Name" : "led_rear_enc_id0",
+               "Action" : "On",
+               "DutyOn" : 50,
+               "Period" : 0,
+               "Priority" : "Blink"
+            },
+            {
+               "Name" : "virtual_enc_id",
+               "Action" : "On",
+               "DutyOn" : 50,
+               "Period" : 0,
+               "Priority" : "Blink"
+            }
+         ]
+      },
+      {
+         "group" : "connector4_identify",
+         "members" : [
+            {
+               "Name" : "pca955x_front_sys_id0",
+               "Action" : "On",
+               "DutyOn" : 50,
+               "Period" : 0,
+               "Priority" : "Blink"
+            },
+            {
+               "Name" : "led_rear_enc_id0",
+               "Action" : "On",
+               "DutyOn" : 50,
+               "Period" : 0,
+               "Priority" : "Blink"
+            },
+            {
+               "Name" : "virtual_enc_id",
+               "Action" : "On",
+               "DutyOn" : 50,
+               "Period" : 0,
+               "Priority" : "Blink"
+            }
+         ]
+      },
+      {
+         "group" : "connector5_identify",
+         "members" : [
+            {
+               "Name" : "pca955x_front_sys_id0",
+               "Action" : "On",
+               "DutyOn" : 50,
+               "Period" : 0,
+               "Priority" : "Blink"
+            },
+            {
+               "Name" : "led_rear_enc_id0",
+               "Action" : "On",
+               "DutyOn" : 50,
+               "Period" : 0,
+               "Priority" : "Blink"
+            },
+            {
+               "Name" : "virtual_enc_id",
+               "Action" : "On",
+               "DutyOn" : 50,
+               "Period" : 0,
+               "Priority" : "Blink"
+            }
+         ]
+      },
+      {
+         "group" : "ethernet0_identify",
+         "members" : [
+            {
+               "Name" : "pca955x_front_sys_id0",
+               "Action" : "On",
+               "DutyOn" : 50,
+               "Period" : 0,
+               "Priority" : "Blink"
+            },
+            {
+               "Name" : "led_rear_enc_id0",
+               "Action" : "On",
+               "DutyOn" : 50,
+               "Period" : 0,
+               "Priority" : "Blink"
+            },
+            {
+               "Name" : "virtual_enc_id",
+               "Action" : "On",
+               "DutyOn" : 50,
+               "Period" : 0,
+               "Priority" : "Blink"
+            }
+         ]
+      },
+      {
+         "group" : "ethernet1_identify",
+         "members" : [
+            {
+               "Name" : "pca955x_front_sys_id0",
+               "Action" : "On",
+               "DutyOn" : 50,
+               "Period" : 0,
+               "Priority" : "Blink"
+            },
+            {
+               "Name" : "led_rear_enc_id0",
+               "Action" : "On",
+               "DutyOn" : 50,
+               "Period" : 0,
+               "Priority" : "Blink"
+            },
+            {
+               "Name" : "virtual_enc_id",
+               "Action" : "On",
+               "DutyOn" : 50,
+               "Period" : 0,
+               "Priority" : "Blink"
+            }
+         ]
+      },
+      {
+         "group" : "usb2_conn0_identify",
+         "members" : [
+            {
+               "Name" : "pca955x_front_sys_id0",
+               "Action" : "On",
+               "DutyOn" : 50,
+               "Period" : 0,
+               "Priority" : "Blink"
+            },
+            {
+               "Name" : "led_rear_enc_id0",
+               "Action" : "On",
+               "DutyOn" : 50,
+               "Period" : 0,
+               "Priority" : "Blink"
+            },
+            {
+               "Name" : "virtual_enc_id",
+               "Action" : "On",
+               "DutyOn" : 50,
+               "Period" : 0,
+               "Priority" : "Blink"
+            }
+         ]
+      },
+      {
+         "group" : "usb2_conn1_identify",
+         "members" : [
+            {
+               "Name" : "pca955x_front_sys_id0",
+               "Action" : "On",
+               "DutyOn" : 50,
+               "Period" : 0,
+               "Priority" : "Blink"
+            },
+            {
+               "Name" : "led_rear_enc_id0",
+               "Action" : "On",
+               "DutyOn" : 50,
+               "Period" : 0,
+               "Priority" : "Blink"
+            },
+            {
+               "Name" : "virtual_enc_id",
+               "Action" : "On",
+               "DutyOn" : 50,
+               "Period" : 0,
+               "Priority" : "Blink"
+            }
+         ]
+      },
+      {
+         "group" : "usb3_conn0_identify",
+         "members" : [
+            {
+               "Name" : "pca955x_front_sys_id0",
+               "Action" : "On",
+               "DutyOn" : 50,
+               "Period" : 0,
+               "Priority" : "Blink"
+            },
+            {
+               "Name" : "led_rear_enc_id0",
+               "Action" : "On",
+               "DutyOn" : 50,
+               "Period" : 0,
+               "Priority" : "Blink"
+            },
+            {
+               "Name" : "virtual_enc_id",
+               "Action" : "On",
+               "DutyOn" : 50,
+               "Period" : 0,
+               "Priority" : "Blink"
+            }
+         ]
+      },
+      {
+         "group" : "usb3_conn1_identify",
+         "members" : [
+            {
+               "Name" : "pca955x_front_sys_id0",
+               "Action" : "On",
+               "DutyOn" : 50,
+               "Period" : 0,
+               "Priority" : "Blink"
+            },
+            {
+               "Name" : "led_rear_enc_id0",
+               "Action" : "On",
+               "DutyOn" : 50,
+               "Period" : 0,
+               "Priority" : "Blink"
+            },
+            {
+               "Name" : "virtual_enc_id",
+               "Action" : "On",
+               "DutyOn" : 50,
+               "Period" : 0,
+               "Priority" : "Blink"
+            }
+         ]
+      },
+      {
+         "group" : "dp_connector0_identify",
+         "members" : [
+            {
+               "Name" : "pca955x_front_sys_id0",
+               "Action" : "On",
+               "DutyOn" : 50,
+               "Period" : 0,
+               "Priority" : "Blink"
+            },
+            {
+               "Name" : "led_rear_enc_id0",
+               "Action" : "On",
+               "DutyOn" : 50,
+               "Period" : 0,
+               "Priority" : "Blink"
+            },
+            {
+               "Name" : "virtual_enc_id",
+               "Action" : "On",
+               "DutyOn" : 50,
+               "Period" : 0,
+               "Priority" : "Blink"
+            }
+         ]
+      },
+      {
+         "group" : "dp_connector1_identify",
+         "members" : [
+            {
+               "Name" : "pca955x_front_sys_id0",
+               "Action" : "On",
+               "DutyOn" : 50,
+               "Period" : 0,
+               "Priority" : "Blink"
+            },
+            {
+               "Name" : "led_rear_enc_id0",
                "Action" : "On",
                "DutyOn" : 50,
                "Period" : 0,
