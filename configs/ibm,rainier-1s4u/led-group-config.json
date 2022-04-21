@@ -497,10 +497,10 @@
          ]
       },
       {
-         "group" : "ddimm0_fault",
+         "group" : "ddimm16_fault",
          "members" : [
             {
-               "Name" : "pca955x_ddimm0",
+               "Name" : "pca955x_ddimm16",
                "Action" : "On",
                "DutyOn" : 50,
                "Period" : 0,
@@ -530,10 +530,10 @@
          ]
       },
       {
-         "group" : "ddimm0_identify",
+         "group" : "ddimm16_identify",
          "members" : [
             {
-               "Name" : "pca955x_ddimm0",
+               "Name" : "pca955x_ddimm16",
                "Action" : "Blink",
                "DutyOn" : 50,
                "Period" : 1000,
@@ -563,10 +563,10 @@
          ]
       },
       {
-         "group" : "ddimm1_fault",
+         "group" : "ddimm17_fault",
          "members" : [
             {
-               "Name" : "pca955x_ddimm1",
+               "Name" : "pca955x_ddimm17",
                "Action" : "On",
                "DutyOn" : 50,
                "Period" : 0,
@@ -596,10 +596,10 @@
          ]
       },
       {
-         "group" : "ddimm1_identify",
+         "group" : "ddimm17_identify",
          "members" : [
             {
-               "Name" : "pca955x_ddimm1",
+               "Name" : "pca955x_ddimm17",
                "Action" : "Blink",
                "DutyOn" : 50,
                "Period" : 1000,
@@ -629,10 +629,10 @@
          ]
       },
       {
-         "group" : "ddimm2_fault",
+         "group" : "ddimm18_fault",
          "members" : [
             {
-               "Name" : "pca955x_ddimm2",
+               "Name" : "pca955x_ddimm18",
                "Action" : "On",
                "DutyOn" : 50,
                "Period" : 0,
@@ -662,10 +662,10 @@
          ]
       },
       {
-         "group" : "ddimm2_identify",
+         "group" : "ddimm18_identify",
          "members" : [
             {
-               "Name" : "pca955x_ddimm2",
+               "Name" : "pca955x_ddimm18",
                "Action" : "Blink",
                "DutyOn" : 50,
                "Period" : 1000,
@@ -695,10 +695,10 @@
          ]
       },
       {
-         "group" : "ddimm3_fault",
+         "group" : "ddimm20_fault",
          "members" : [
             {
-               "Name" : "pca955x_ddimm3",
+               "Name" : "pca955x_ddimm20",
                "Action" : "On",
                "DutyOn" : 50,
                "Period" : 0,
@@ -728,10 +728,10 @@
          ]
       },
       {
-         "group" : "ddimm3_identify",
+         "group" : "ddimm20_identify",
          "members" : [
             {
-               "Name" : "pca955x_ddimm3",
+               "Name" : "pca955x_ddimm20",
                "Action" : "Blink",
                "DutyOn" : 50,
                "Period" : 1000,
@@ -761,10 +761,10 @@
          ]
       },
       {
-         "group" : "ddimm4_fault",
+         "group" : "ddimm21_fault",
          "members" : [
             {
-               "Name" : "pca955x_ddimm4",
+               "Name" : "pca955x_ddimm21",
                "Action" : "On",
                "DutyOn" : 50,
                "Period" : 0,
@@ -794,10 +794,10 @@
          ]
       },
       {
-         "group" : "ddimm4_identify",
+         "group" : "ddimm21_identify",
          "members" : [
             {
-               "Name" : "pca955x_ddimm4",
+               "Name" : "pca955x_ddimm21",
                "Action" : "Blink",
                "DutyOn" : 50,
                "Period" : 1000,
@@ -827,10 +827,10 @@
          ]
       },
       {
-         "group" : "ddimm5_fault",
+         "group" : "ddimm23_fault",
          "members" : [
             {
-               "Name" : "pca955x_ddimm5",
+               "Name" : "pca955x_ddimm23",
                "Action" : "On",
                "DutyOn" : 50,
                "Period" : 0,
@@ -860,10 +860,10 @@
          ]
       },
       {
-         "group" : "ddimm5_identify",
+         "group" : "ddimm23_identify",
          "members" : [
             {
-               "Name" : "pca955x_ddimm5",
+               "Name" : "pca955x_ddimm23",
                "Action" : "Blink",
                "DutyOn" : 50,
                "Period" : 1000,
@@ -893,10 +893,10 @@
          ]
       },
       {
-         "group" : "ddimm6_fault",
+         "group" : "ddimm22_fault",
          "members" : [
             {
-               "Name" : "pca955x_ddimm6",
+               "Name" : "pca955x_ddimm22",
                "Action" : "On",
                "DutyOn" : 50,
                "Period" : 0,
@@ -926,10 +926,10 @@
          ]
       },
       {
-         "group" : "ddimm6_identify",
+         "group" : "ddimm22_identify",
          "members" : [
             {
-               "Name" : "pca955x_ddimm6",
+               "Name" : "pca955x_ddimm22",
                "Action" : "Blink",
                "DutyOn" : 50,
                "Period" : 1000,
@@ -959,10 +959,10 @@
          ]
       },
       {
-         "group" : "ddimm7_fault",
+         "group" : "ddimm19_fault",
          "members" : [
             {
-               "Name" : "pca955x_ddimm7",
+               "Name" : "pca955x_ddimm19",
                "Action" : "On",
                "DutyOn" : 50,
                "Period" : 0,
@@ -992,10 +992,10 @@
          ]
       },
       {
-         "group" : "ddimm7_identify",
+         "group" : "ddimm19_identify",
          "members" : [
             {
-               "Name" : "pca955x_ddimm7",
+               "Name" : "pca955x_ddimm19",
                "Action" : "Blink",
                "DutyOn" : 50,
                "Period" : 1000,
