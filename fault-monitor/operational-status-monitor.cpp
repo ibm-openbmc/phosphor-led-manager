@@ -9,6 +9,8 @@
 #include <phosphor-logging/elog.hpp>
 #include <phosphor-logging/lg2.hpp>
 
+#include <iostream>
+
 namespace phosphor
 {
 namespace led
@@ -19,6 +21,58 @@ namespace status
 {
 namespace monitor
 {
+void Monitor::removeCriticalAssociation(const std::string& objectPath,
+                                        const std::string& service)
+{
+    try
+    {
+        DBusValue getAssociationValue;
+
+        auto method =
+            bus.new_method_call(service.c_str(), objectPath.c_str(),
+                                "org.freedesktop.DBus.Properties", "Get");
+        method.append("xyz.openbmc_project.Association.Definitions",
+                      "Associations");
+        auto reply = bus.call(method);
+
+        reply.read(getAssociationValue);
+
+        auto association = std::get<AssociationsProperty>(getAssociationValue);
+
+        AssociationTuple critAssociation{
+            "health_rollup", "critical",
+            "/xyz/openbmc_project/inventory/system/chassis"};
+
+        auto it =
+            std::find(association.begin(), association.end(), critAssociation);
+
+        if (it != association.end())
+        {
+            association.erase(it);
+            DBusValue setAssociationValue = association;
+
+            auto method =
+                bus.new_method_call(service.c_str(), objectPath.c_str(),
+                                    "org.freedesktop.DBus.Properties", "Set");
+
+            method.append("xyz.openbmc_project.Association.Definitions",
+                          "Associations", setAssociationValue);
+            bus.call(method);
+
+            std::cout << "\nRemoved critical association between " << objectPath
+                      << " and /xyz/openbmc_project/inventory/system/chassis."
+                      << std::endl;
+        }
+    }
+    catch (const sdbusplus::exception::exception& e)
+    {
+        std::cerr << e.what();
+    }
+    catch (const std::runtime_error& e)
+    {
+        std::cerr << e.what();
+    }
+}
 
 void Monitor::matchHandler(sdbusplus::message::message& msg)
 {
@@ -44,6 +98,16 @@ void Monitor::matchHandler(sdbusplus::message::message& msg)
             return;
         }
 
+        // If the Functional value changes from false to true, remove critical
+        // associations between the corresponding FRU and the chassis.
+        if (!functionalValue && *value)
+        {
+            removeCriticalAssociation(invObjectPath,
+                                      "xyz.openbmc_project.Inventory.Manager");
+        }
+
+        functionalValue = *value;
+
         // See if the Inventory D-Bus object has an association with LED groups
         // D-Bus object.
         auto ledGroupPath = getLedGroupPaths(invObjectPath);
@@ -57,7 +121,7 @@ void Monitor::matchHandler(sdbusplus::message::message& msg)
         }
 
         // Update the Asserted property by the Functional property value.
-        updateAssertedProperty(ledGroupPath, *value);
+        updateAssertedProperty(ledGroupPath);
     }
 }
 
@@ -93,7 +157,7 @@ const std::vector<std::string>
 }
 
 void Monitor::updateAssertedProperty(
-    const std::vector<std::string>& ledGroupPaths, bool value)
+    const std::vector<std::string>& ledGroupPaths)
 {
     for (const auto& path : ledGroupPaths)
     {
@@ -110,7 +174,7 @@ void Monitor::updateAssertedProperty(
             // Call "Group Asserted --> true" if the value of Functional is
             // false Call "Group Asserted --> false" if the value of Functional
             // is true
-            PropertyValue assertedValue{!value};
+            PropertyValue assertedValue{!functionalValue};
             dBusHandler.setProperty(path, "xyz.openbmc_project.Led.Group",
                                     "Asserted", assertedValue);
         }

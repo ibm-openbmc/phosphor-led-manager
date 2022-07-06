@@ -16,6 +16,12 @@ namespace status
 namespace monitor
 {
 using namespace phosphor::led::utils;
+using DBusValue = std::variant<
+    std::string, bool, std::vector<uint8_t>, std::vector<std::string>,
+    std::vector<std::tuple<std::string, std::string, std::string>>>;
+
+using AssociationTuple = std::tuple<std::string, std::string, std::string>;
+using AssociationsProperty = std::vector<AssociationTuple>;
 
 /** @class Monitor
  *  @brief Implementation of LED handling during the change of the Functional
@@ -87,10 +93,25 @@ class Monitor
      * @brief Update the Asserted property of the LED Group Manager.
      *
      * @param[in] ledGroupPaths   - LED Group D-Bus object Paths
-     * @param[in] value           - The Asserted property value, True / False
      */
-    void updateAssertedProperty(const std::vector<std::string>& ledGroupPaths,
-                                bool value);
+    void updateAssertedProperty(const std::vector<std::string>& ledGroupPaths);
+
+    /**
+     * @brief API to remove chassis critical association on the d-bus object
+     * This method removes the critical association between the given object
+     * path and chassis when the corresponding faulty FRU is repaired/replaced.
+     * The repair status of the FRU can be identified from the FRU's operational
+     * status (Functional property). The critical association is removed when
+     * the corresponding FRU's operational status (Functional property) is set
+     * to true from false.
+     * @param[in] objectPath - The FRU's d-bus object path.
+     * @param[in] service - D-bus service.
+     */
+    void removeCriticalAssociation(const std::string& objectPath,
+                                   const std::string& service);
+
+    /** Functional property of a FRU */
+    bool functionalValue = false;
 };
 } // namespace monitor
 } // namespace status
