@@ -19,6 +19,50 @@ namespace status
 {
 namespace monitor
 {
+void Monitor::removeCriticalAssociation(const std::string& objectPath)
+{
+    try
+    {
+        PropertyValue getAssociationValue = dBusHandler.getProperty(
+            objectPath.c_str(), "xyz.openbmc_project.Association.Definitions",
+            "Associations");
+
+        auto association = std::get<AssociationsProperty>(getAssociationValue);
+
+        AssociationTuple criticalAssociation{
+            "health_rollup", "critical",
+            "/xyz/openbmc_project/inventory/system/chassis"};
+
+        auto it = std::find(association.begin(), association.end(),
+                            criticalAssociation);
+
+        if (it != association.end())
+        {
+            association.erase(it);
+
+            dBusHandler.setProperty(
+                objectPath.c_str(),
+                "xyz.openbmc_project.Association.Definitions", "Associations",
+                association);
+
+            lg2::info(
+                "Removed chassis critical association. INVENTORY_PATH = {PATH}",
+                "PATH", objectPath);
+        }
+    }
+    catch (const sdbusplus::exception::exception& e)
+    {
+        lg2::error(
+            "Failed to remove chassis critical association, ERROR = {ERROR}, PATH = {PATH}",
+            "ERROR", e, "PATH", objectPath);
+    }
+    catch (const std::bad_variant_access& e)
+    {
+        lg2::error(
+            "Failed to remove chassis critical association, ERROR = {ERROR}, PATH = {PATH}",
+            "ERROR", e, "PATH", objectPath);
+    }
+}
 
 void Monitor::matchHandler(sdbusplus::message_t& msg)
 {
@@ -42,6 +86,11 @@ void Monitor::matchHandler(sdbusplus::message_t& msg)
                 "Faild to get the Functional property, INVENTORY_PATH = {PATH}",
                 "PATH", invObjectPath);
             return;
+        }
+
+        if (*value)
+        {
+            removeCriticalAssociation(invObjectPath);
         }
 
         // See if the Inventory D-Bus object has an association with LED groups
