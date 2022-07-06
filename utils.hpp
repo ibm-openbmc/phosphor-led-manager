@@ -14,11 +14,16 @@ constexpr auto MAPPER_OBJ_PATH = "/xyz/openbmc_project/object_mapper";
 constexpr auto MAPPER_IFACE = "xyz.openbmc_project.ObjectMapper";
 constexpr auto DBUS_PROPERTY_IFACE = "org.freedesktop.DBus.Properties";
 
+using AssociationTuple = std::tuple<std::string, std::string, std::string>;
+using AssociationsProperty = std::vector<AssociationTuple>;
+
 // The value of the property(type: variant, contains some basic types)
 // Eg: uint8_t : dutyOn, uint16_t : Period, std::string : Name,
-// std::vector<std::string> : endpoints, bool : Functional
-using PropertyValue = std::variant<uint8_t, uint16_t, std::string,
-                                   std::vector<std::string>, bool>;
+// std::vector<std::string> : endpoints, bool : Functional, AssociationsProperty
+// : Associations
+using PropertyValue =
+    std::variant<uint8_t, uint16_t, std::string, std::vector<std::string>, bool,
+                 AssociationsProperty>;
 
 // The name of the property
 using DbusProperty = std::string;

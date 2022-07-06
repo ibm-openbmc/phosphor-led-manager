@@ -91,6 +91,16 @@ class Monitor
      */
     void updateAssertedProperty(const std::vector<std::string>& ledGroupPaths,
                                 bool value);
+
+    /**
+     * @brief API to remove chassis critical association on the d-bus object
+     *
+     * This method removes the chassis association when the operational status
+     * of the given FRU is set to true.
+     *
+     * @param[in] objectPath - The FRU's d-bus object path.
+     */
+    void removeCriticalAssociation(const std::string& objectPath);
 };
 } // namespace monitor
 } // namespace status
