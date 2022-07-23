@@ -45,7 +45,7 @@ int main(int argc, char** argv)
     phosphor::led::Manager manager(bus, systemLedMap, event);
 
     /** @brief sd_bus object manager */
-    sdbusplus::server::manager::manager objManager(bus, OBJPATH);
+    sdbusplus::server::manager_t objManager(bus, OBJPATH);
 
 #ifdef USE_LAMP_TEST
     if (std::filesystem::exists(LAMP_TEST_INDICATOR_FILE))

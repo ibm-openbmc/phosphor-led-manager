@@ -148,7 +148,7 @@ class Manager
 
   private:
     /** @brief sdbusplus handler */
-    sdbusplus::bus::bus& bus;
+    sdbusplus::bus_t& bus;
 
     /** Map of physical LED path to service name */
     std::unordered_map<std::string, std::string> phyLeds{};
