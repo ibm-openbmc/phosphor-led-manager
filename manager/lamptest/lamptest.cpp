@@ -82,6 +82,14 @@ void LampTest::stop()
         manager.drivePhysicalLED(path, Layout::Action::Off, 0, 0);
     }
 
+    if (std::filesystem::exists(LAMP_TEST_INDICATOR_FILE))
+    {
+        if (!std::filesystem::remove(LAMP_TEST_INDICATOR_FILE))
+        {
+            lg2::error("error removing file after lamp test is over");
+        }
+    }
+
     isLampTestRunning = false;
     restorePhysicalLedStates();
 }
@@ -186,6 +194,12 @@ void LampTest::start()
 
     // Notify PHYP to start the lamp test
     doHostLampTest(true);
+
+    // Create a file to maintain the state across reboots that Lamp test is on.
+    // This is required as there was a scenario where it has been found that
+    // LEDs remains in "on" state if lamp test is triggered and reboot takes
+    // place.
+    std::ofstream(LAMP_TEST_INDICATOR_FILE);
 
     // Set all the Physical action to On for lamp test
     for (const auto& path : physicalLEDPaths)
