@@ -6291,32 +6291,6 @@
          ]
       },
       {
-         "group" : "connector10_identify",
-         "members" : [
-            {
-               "Name" : "pca955x_front_sys_id0",
-               "Action" : "On",
-               "DutyOn" : 50,
-               "Period" : 0,
-               "Priority" : "Blink"
-            },
-            {
-               "Name" : "rear_enc_id0",
-               "Action" : "On",
-               "DutyOn" : 50,
-               "Period" : 0,
-               "Priority" : "Blink"
-            },
-            {
-               "Name" : "virtual_enc_id",
-               "Action" : "On",
-               "DutyOn" : 50,
-               "Period" : 0,
-               "Priority" : "Blink"
-            }
-         ]
-      },
-      {
          "group" : "connector11_identify",
          "members" : [
             {
@@ -6422,32 +6396,6 @@
       },
       {
          "group" : "connector15_identify",
-         "members" : [
-            {
-               "Name" : "pca955x_front_sys_id0",
-               "Action" : "On",
-               "DutyOn" : 50,
-               "Period" : 0,
-               "Priority" : "Blink"
-            },
-            {
-               "Name" : "rear_enc_id0",
-               "Action" : "On",
-               "DutyOn" : 50,
-               "Period" : 0,
-               "Priority" : "Blink"
-            },
-            {
-               "Name" : "virtual_enc_id",
-               "Action" : "On",
-               "DutyOn" : 50,
-               "Period" : 0,
-               "Priority" : "Blink"
-            }
-         ]
-      },
-      {
-         "group" : "connector16_identify",
          "members" : [
             {
                "Name" : "pca955x_front_sys_id0",
