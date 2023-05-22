@@ -248,10 +248,14 @@ bool LampTest::requestHandler(Group* group, bool value)
             stop();
             return true;
         }
-        else
+        else if (timer.isEnabled())
         {
             lg2::info(
                 "Lamp test is still running. Cannot force stop the lamp test. Asserted is set back to true.");
+            return false;
+        }
+        else
+        {
             return false;
         }
     }
