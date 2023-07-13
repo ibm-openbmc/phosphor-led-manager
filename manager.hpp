@@ -3,6 +3,9 @@
 #include "ledlayout.hpp"
 #include "utils.hpp"
 
+#include <sdeventplus/event.hpp>
+#include <sdeventplus/utility/timer.hpp>
+
 #include <map>
 #include <set>
 #include <string>
@@ -78,9 +81,13 @@ class Manager
      *
      *  @param [in] bus       - sdbusplus handler
      *  @param [in] LedLayout - LEDs group layout
+     *  @param [in] Event    - sd event handler
      */
-    Manager(sdbusplus::bus::bus& bus, const LedLayout& ledLayout) :
-        ledMap(ledLayout), bus(bus)
+    Manager(
+        sdbusplus::bus_t& bus, const LedLayout& ledLayout,
+        const sdeventplus::Event& event = sdeventplus::Event::get_default()) :
+        ledMap(ledLayout),
+        bus(bus), timer(event, [this](auto&) { driveLedsHandler(); })
     {
         // Nothing here
     }
@@ -115,9 +122,11 @@ class Manager
      *  @param[in]  action    -  Intended action to be triggered
      *  @param[in]  dutyOn    -  Duty Cycle ON percentage
      *  @param[in]  period    -  Time taken for one blink cycle
+     *
+     *  @return:              -  0: success, -1: LED set failed
      */
-    void drivePhysicalLED(const std::string& objPath, Layout::Action action,
-                          uint8_t dutyOn, const uint16_t period);
+    int drivePhysicalLED(const std::string& objPath, Layout::Action action,
+                         uint8_t dutyOn, const uint16_t period);
 
     /** @brief Set lamp test callback when enabled lamp test.
      *
@@ -161,6 +170,18 @@ class Manager
     /** @brief Custom callback when enabled lamp test */
     std::function<bool(group& ledsAssert, group& ledsDeAssert)>
         lampTestCallBack;
+
+    /** @brief Timer used for LEDs handler callback*/
+    sdeventplus::utility::Timer<sdeventplus::ClockId::Monotonic> timer;
+
+    /** @brief Contains the required set of assert LEDs action */
+    group reqLedsAssert;
+
+    /** @brief Contains the required set of deassert LEDs action */
+    group reqLedsDeAssert;
+
+    /** @brief LEDs handler callback */
+    void driveLedsHandler();
 
     /** @brief Returns action string based on enum
      *
