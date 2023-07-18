@@ -10,10 +10,10 @@ namespace led
 {
 namespace utils
 {
-constexpr auto MAPPER_BUSNAME = "xyz.openbmc_project.ObjectMapper";
-constexpr auto MAPPER_OBJ_PATH = "/xyz/openbmc_project/object_mapper";
-constexpr auto MAPPER_IFACE = "xyz.openbmc_project.ObjectMapper";
-constexpr auto DBUS_PROPERTY_IFACE = "org.freedesktop.DBus.Properties";
+static constexpr auto mapperBusName = "xyz.openbmc_project.ObjectMapper";
+static constexpr auto mapperObjPath = "/xyz/openbmc_project/object_mapper";
+static constexpr auto mapperIntf = "xyz.openbmc_project.ObjectMapper";
+static constexpr auto proIntf = "org.freedesktop.DBus.Properties";
 
 using AssociationTuple = std::tuple<std::string, std::string, std::string>;
 using AssociationsProperty = std::vector<AssociationTuple>;

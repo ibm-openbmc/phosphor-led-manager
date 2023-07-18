@@ -53,7 +53,7 @@ int main(int argc, char** argv)
         // we need to off all the LEDs.
         phosphor::led::utils::DBusHandler dBusHandler;
         std::vector<std::string> pysicalLedPaths = dBusHandler.getSubTreePaths(
-            phosphor::led::PHY_LED_PATH, phosphor::led::PHY_LED_IFACE);
+            phosphor::led::phyLedPath, phosphor::led::phyLedIntf);
 
         for (const auto& path : pysicalLedPaths)
         {
@@ -96,9 +96,9 @@ int main(int argc, char** argv)
         [&bus, &manager, &serialize](
             const std::pair<std::string,
                             std::set<phosphor::led::Layout::LedAction>>& grp) {
-            return std::make_unique<phosphor::led::Group>(bus, grp.first,
-                                                          manager, serialize);
-        });
+        return std::make_unique<phosphor::led::Group>(bus, grp.first, manager,
+                                                      serialize);
+    });
 
     // Attach the bus to sd_event to service user requests
     bus.attach_event(event.get(), SD_EVENT_PRIORITY_NORMAL);
