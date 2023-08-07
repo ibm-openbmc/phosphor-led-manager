@@ -119,8 +119,7 @@ install_data(
 
 subdir('fault-monitor')
 
-build_tests = get_option('tests')
-if not build_tests.disabled()
+if get_option('tests').allowed()
   subdir('test')
 endif
 
