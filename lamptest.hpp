@@ -8,6 +8,7 @@
 #include <nlohmann/json.hpp>
 #include <sdeventplus/utility/timer.hpp>
 
+#include <cstdint>
 #include <queue>
 #include <vector>
 
