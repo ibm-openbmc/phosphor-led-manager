@@ -1,6 +1,7 @@
 #pragma once
 #include <sdbusplus/server.hpp>
 
+#include <cstdint>
 #include <map>
 #include <vector>
 namespace phosphor
