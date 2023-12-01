@@ -113,6 +113,15 @@ foreach g : generated_sources generated_others
     endforeach
 endforeach
 
+if cpp.has_header('CLI/CLI.hpp')
+    CLI11_dep = declare_dependency()
+else
+    CLI11_dep = dependency(
+        'CLI11',
+        fallback: [ 'CLI11', 'CLI11_dep' ],
+    )
+endif
+
 deps = [
     sdbusplus_dep,
     sdeventplus_dep,
