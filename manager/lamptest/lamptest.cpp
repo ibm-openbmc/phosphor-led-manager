@@ -9,8 +9,8 @@ namespace led
 
 using Json = nlohmann::json;
 
-bool LampTest::processLEDUpdates(const Manager::group& ledsAssert,
-                                 const Manager::group& ledsDeAssert)
+bool LampTest::processLEDUpdates(const ActionSet& ledsAssert,
+                                 const ActionSet& ledsDeAssert)
 {
     // If the physical LED status is updated during the lamp test, it should be
     // saved to Queue, and the queue will be processed after the lamp test is
@@ -94,15 +94,15 @@ void LampTest::stop()
 
 Layout::Action LampTest::getActionFromString(const std::string& str)
 {
-    Layout::Action action = Layout::Off;
+    Layout::Action action = Layout::Action::Off;
 
     if (str == "xyz.openbmc_project.Led.Physical.Action.On")
     {
-        action = Layout::On;
+        action = Layout::Action::On;
     }
     else if (str == "xyz.openbmc_project.Led.Physical.Action.Blink")
     {
-        action = Layout::Blink;
+        action = Layout::Action::Blink;
     }
 
     return action;
@@ -157,10 +157,10 @@ void LampTest::storePhysicalLEDsStates()
         }
 
         phosphor::led::Layout::Action action = getActionFromString(state);
-        if (action != phosphor::led::Layout::Off)
+        if (action != phosphor::led::Layout::Action::Off)
         {
             phosphor::led::Layout::LedAction ledAction{
-                name, action, dutyOn, period, phosphor::led::Layout::On};
+                name, action, dutyOn, period, phosphor::led::Layout::Action::On};
             physicalLEDStatesPriorToLampTest.emplace(ledAction);
         }
     }
@@ -264,7 +264,7 @@ bool LampTest::requestHandler(Group* group, bool value)
 void LampTest::restorePhysicalLedStates()
 {
     // restore physical LEDs states before lamp test
-    Manager::group ledsDeAssert{};
+    ActionSet ledsDeAssert{};
     manager.driveLEDs(physicalLEDStatesPriorToLampTest, ledsDeAssert);
     physicalLEDStatesPriorToLampTest.clear();
 

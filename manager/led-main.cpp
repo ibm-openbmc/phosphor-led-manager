@@ -96,6 +96,12 @@ int main(int argc, char** argv)
             bus, grp.first, manager, serialize));
     }
 
+      std::ranges::transform(systemLedMap, std::back_inserter(groups),
+                           [&bus, &manager, &serialize](auto& grp) {
+                               return std::make_unique<phosphor::led::Group>(
+                                   bus, grp.first, manager, serialize);
+			       });
+
     // Attach the bus to sd_event to service user requests
     bus.attach_event(event.get(), SD_EVENT_PRIORITY_NORMAL);
 

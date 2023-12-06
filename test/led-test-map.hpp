@@ -1,12 +1,6 @@
 #include "ledlayout.hpp"
 
-#include <set>
-#include <string>
-#include <unordered_map>
-
-static const std::unordered_map<std::string,
-                                std::set<phosphor::led::Layout::LedAction>>
-    singleLedOn = {
+static const phosphor::led::GroupMap singleLedOn = {
         {"/xyz/openbmc_project/ledmanager/groups/SingleLed",
          {
              {"One", phosphor::led::Layout::On, 0, 0,
@@ -14,9 +8,7 @@ static const std::unordered_map<std::string,
          }},
 };
 
-static const std::unordered_map<std::string,
-                                std::set<phosphor::led::Layout::LedAction>>
-    singleLedBlink = {
+static const phosphor::led::GroupMap singleLedBlink = {
         {"/xyz/openbmc_project/ledmanager/groups/SingleLed",
          {
              {"One", phosphor::led::Layout::Blink, 0, 0,
@@ -24,9 +16,7 @@ static const std::unordered_map<std::string,
          }},
 };
 
-static const std::unordered_map<std::string,
-                                std::set<phosphor::led::Layout::LedAction>>
-    singleLedBlinkOverrideOn = {
+static const phosphor::led::GroupMap singleLedBlinkOverrideOn = {
         {"/xyz/openbmc_project/ledmanager/groups/SingleLed",
          {
              {"One", phosphor::led::Layout::Blink, 0, 0,
@@ -34,9 +24,7 @@ static const std::unordered_map<std::string,
          }},
 };
 
-static const std::unordered_map<std::string,
-                                std::set<phosphor::led::Layout::LedAction>>
-    multipleLedsOn = {
+static const phosphor::led::GroupMap multipleLedsOn = {
         {"/xyz/openbmc_project/ledmanager/groups/MultipleLeds",
          {
              {"One", phosphor::led::Layout::On, 0, 0,
@@ -48,9 +36,7 @@ static const std::unordered_map<std::string,
          }},
 };
 
-static const std::unordered_map<std::string,
-                                std::set<phosphor::led::Layout::LedAction>>
-    multipleLedsBlink = {
+static const phosphor::led::GroupMap multipleLedsBlink = {
         {"/xyz/openbmc_project/ledmanager/groups/MultipleLeds",
          {
              {"One", phosphor::led::Layout::Blink, 0, 0,
@@ -62,9 +48,7 @@ static const std::unordered_map<std::string,
          }},
 };
 
-static const std::unordered_map<std::string,
-                                std::set<phosphor::led::Layout::LedAction>>
-    multipleLedsOnAndBlink = {
+static const phosphor::led::GroupMap multipleLedsOnAndBlink = {
         {"/xyz/openbmc_project/ledmanager/groups/MultipleLedsMix",
          {
              {"One", phosphor::led::Layout::Blink, 0, 0,
@@ -80,9 +64,7 @@ static const std::unordered_map<std::string,
          }},
 };
 
-static const std::unordered_map<std::string,
-                                std::set<phosphor::led::Layout::LedAction>>
-    twoGroupsWithDistinctLEDsOn = {
+static const phosphor::led::GroupMap twoGroupsWithDistinctLEDsOn = {
         {"/xyz/openbmc_project/ledmanager/groups/MultipleLedsASet",
          {
              {"One", phosphor::led::Layout::On, 0, 0,
@@ -103,9 +85,7 @@ static const std::unordered_map<std::string,
          }},
 };
 
-static const std::unordered_map<std::string,
-                                std::set<phosphor::led::Layout::LedAction>>
-    twoGroupsWithOneComonLEDOn = {
+static const phosphor::led::GroupMap twoGroupsWithOneComonLEDOn = {
         {"/xyz/openbmc_project/ledmanager/groups/MultipleLedsASet",
          {
              {"One", phosphor::led::Layout::On, 0, 0,
@@ -126,8 +106,7 @@ static const std::unordered_map<std::string,
          }},
 };
 
-static const std::unordered_map<std::string,
-                                std::set<phosphor::led::Layout::LedAction>>
+static const phosphor::led::GroupMap
     twoGroupsWithOneComonLEDOnOneLEDBlinkPriority = {
         {"/xyz/openbmc_project/ledmanager/groups/MultipleLedsASet",
          {
@@ -149,9 +128,7 @@ static const std::unordered_map<std::string,
          }},
 };
 
-static const std::unordered_map<std::string,
-                                std::set<phosphor::led::Layout::LedAction>>
-    twoGroupsWithOneComonLEDOnPriority = {
+static const phosphor::led::GroupMap twoGroupsWithOneComonLEDOnPriority = {
         {"/xyz/openbmc_project/ledmanager/groups/MultipleLedsASet",
          {
              {"One", phosphor::led::Layout::On, 0, 0,
@@ -172,9 +149,7 @@ static const std::unordered_map<std::string,
          }},
 };
 
-static const std::unordered_map<std::string,
-                                std::set<phosphor::led::Layout::LedAction>>
-    twoGroupsWithMultiplComonLEDOn = {
+static const phosphor::led::GroupMap twoGroupsWithMultiplComonLEDOn = {        
         {"/xyz/openbmc_project/ledmanager/groups/MultipleLedsASet",
          {
              {"One", phosphor::led::Layout::On, 0, 0,
@@ -197,8 +172,7 @@ static const std::unordered_map<std::string,
          }},
 };
 
-static const std::unordered_map<std::string,
-                                std::set<phosphor::led::Layout::LedAction>>
+static const phosphor::led::GroupMap
     twoGroupsWithMultipleComonLEDInDifferentState = {
         {"/xyz/openbmc_project/ledmanager/groups/MultipleLedsASet",
          {
@@ -224,8 +198,7 @@ static const std::unordered_map<std::string,
          }},
 };
 
-static const std::unordered_map<std::string,
-                                std::set<phosphor::led::Layout::LedAction>>
+static const phosphor::led::GroupMap
     twoGroupsWithMultipleComonLEDInDifferentStateDiffPriority = {
         {"/xyz/openbmc_project/ledmanager/groups/MultipleLedsASet",
          {
