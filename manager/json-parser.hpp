@@ -31,7 +31,6 @@ using PriorityMap =
  */
 const Json readJson(const fs::path& path)
 {
-
     if (!fs::exists(path) || fs::is_empty(path))
     {
         lg2::error("Incorrect File Path or empty file, FILE_PATH = {PATH}",
@@ -79,7 +78,6 @@ void validatePriority(const std::string& name,
                       const phosphor::led::Layout::Action& priority,
                       PriorityMap& priorityMap)
 {
-
     auto iter = priorityMap.find(name);
     if (iter == priorityMap.end())
     {
