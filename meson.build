@@ -27,18 +27,7 @@ conf_data.set('USE_LAMP_TEST', get_option('use-lamp-test').enabled())
 conf_data.set('MONITOR_OPERATIONAL_STATUS', get_option('monitor-operational-status').enabled())
 conf_data.set('IBM_SAI', get_option('monitor-sai-status').enabled())
 
-sdbusplus_dep = dependency('sdbusplus', required: false)
-if sdbusplus_dep.found()
-    sdbusplusplus_prog = find_program('sdbus++')
-    sdbuspp_gen_meson_prog = find_program('sdbus++-gen-meson')
-else
-    sdbusplus_proj = subproject('sdbusplus', required: true)
-    sdbusplus_dep = sdbusplus_proj.get_variable('sdbusplus_dep')
-    sdbusplusplus_prog = sdbusplus_proj.get_variable('sdbusplusplus_prog')
-    sdbuspp_gen_meson_prog = sdbusplus_proj.get_variable(
-        'sdbuspp_gen_meson_prog'
-    )
-endif
+sdbusplus_dep = dependency('sdbusplus')
 
 sdeventplus_dep = dependency(
     'sdeventplus',
@@ -77,42 +66,6 @@ else
     )
 endif
 
-selected_subdirs = []
-selected_subdirs += 'xyz/openbmc_project'
-
-generated_root = meson.current_build_dir() / 'gen'
-generated_others = []
-generated_sources = []
-
-# Source the generated meson files.
-subdir('gen')
-foreach d : selected_subdirs
-  subdir('gen' / d)
-endforeach
-
-# Parse through the list from sdbus++-gendir and put into sets.
-generated_headers = []
-generated_cpp = []
-generated_others_files = []
-
-foreach g : generated_sources generated_others
-    foreach f : g.to_list()
-        rel_path = run_command(
-            realpath_prog,
-            '--relative-to', generated_root,
-            f.full_path(),
-        ).stdout().strip().split('\n')[-1]
-
-        if rel_path.endswith('.hpp')
-            generated_headers += rel_path
-        elif rel_path.endswith('.cpp')
-            generated_cpp += rel_path
-        else
-            generated_others_files += rel_path
-        endif
-    endforeach
-endforeach
-
 if cpp.has_header('CLI/CLI.hpp')
     CLI11_dep = declare_dependency()
 else
@@ -120,6 +73,24 @@ else
         'CLI11',
         fallback: [ 'CLI11', 'CLI11_dep' ],
     )
+endif
+
+#Get Cereal dependency.
+cereal_dep = dependency('cereal', required: false)
+has_cereal = cpp.has_header_symbol(
+    'cereal/cereal.hpp',
+    'cereal::specialize',
+    dependencies: cereal_dep,
+    required: false)
+if not has_cereal
+    cereal_opts = import('cmake').subproject_options()
+    cereal_opts.add_cmake_defines({'BUILD_TESTS': 'OFF'})
+    cereal_proj = import('cmake').subproject(
+        'cereal',
+        options: cereal_opts,
+        required: false)
+    assert(cereal_proj.found(), 'cereal is required')
+    cereal_dep = cereal_proj.dependency('cereal')
 endif
 
 deps = [

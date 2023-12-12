@@ -37,7 +37,6 @@ endif
 executable(
     'phosphor-ledmanager',
     sources,
-    generated_sources,
     include_directories: include_directories('../', '../gen', 'lamptest/'),
     implicit_include_directories: true,
     dependencies: deps,
