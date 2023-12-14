@@ -19,13 +19,12 @@ namespace monitor
 
 using namespace phosphor::logging;
 
-constexpr auto MAPPER_BUSNAME = "xyz.openbmc_project.ObjectMapper";
-constexpr auto MAPPER_OBJ_PATH = "/xyz/openbmc_project/object_mapper";
-constexpr auto MAPPER_IFACE = "xyz.openbmc_project.ObjectMapper";
-constexpr auto OBJMGR_IFACE = "org.freedesktop.DBus.ObjectManager";
-constexpr auto LED_GROUPS = "/xyz/openbmc_project/led/groups/";
-constexpr auto LOG_PATH = "/xyz/openbmc_project/logging";
-constexpr auto LOG_IFACE = "xyz.openbmc_project.Logging.Entry";
+static constexpr auto mapperBusName = "xyz.openbmc_project.ObjectMapper";
+static constexpr auto mapperObjPath = "/xyz/openbmc_project/object_mapper";
+static constexpr auto mapperIntf = "xyz.openbmc_project.ObjectMapper";
+static constexpr auto objMgrIntf = "org.freedesktop.DBus.ObjectManager";
+static constexpr auto ledGroups = "/xyz/openbmc_project/led/groups/";
+static constexpr auto logIntf = "xyz.openbmc_project.Logging.Entry";
 
 using AssociationList =
     std::vector<std::tuple<std::string, std::string, std::string>>;
@@ -47,11 +46,11 @@ using ResourceNotFoundErr =
 using InvalidArgumentErr =
     sdbusplus::xyz::openbmc_project::Common::Error::InvalidArgument;
 
-std::string getService(sdbusplus::bus::bus& bus, const std::string& path)
+std::string getService(sdbusplus::bus_t& bus, const std::string& path)
 {
-    auto mapper = bus.new_method_call(MAPPER_BUSNAME, MAPPER_OBJ_PATH,
-                                      MAPPER_IFACE, "GetObject");
-    mapper.append(path.c_str(), std::vector<std::string>({OBJMGR_IFACE}));
+    auto mapper = bus.new_method_call(mapperBusName, mapperObjPath, mapperIntf,
+                                      "GetObject");
+    mapper.append(path.c_str(), std::vector<std::string>({objMgrIntf}));
 
     std::unordered_map<std::string, std::vector<std::string>> mapperResponse;
     try
@@ -59,7 +58,7 @@ std::string getService(sdbusplus::bus::bus& bus, const std::string& path)
         auto mapperResponseMsg = bus.call(mapper);
         mapperResponseMsg.read(mapperResponse);
     }
-    catch (const sdbusplus::exception::exception& e)
+    catch (const sdbusplus::exception_t& e)
     {
         lg2::error(
             "Failed to parse getService mapper response, ERROR = {ERROR}",
@@ -77,12 +76,12 @@ std::string getService(sdbusplus::bus::bus& bus, const std::string& path)
     return mapperResponse.cbegin()->first;
 }
 
-void action(sdbusplus::bus::bus& bus, const std::string& path, bool assert)
+void action(sdbusplus::bus_t& bus, const std::string& path, bool assert)
 {
     std::string service;
     try
     {
-        std::string groups{LED_GROUPS};
+        std::string groups{ledGroups};
         groups.pop_back();
         service = getService(bus, groups);
     }
@@ -103,7 +102,7 @@ void action(sdbusplus::bus::bus& bus, const std::string& path, bool assert)
     }
     auto unit = path.substr(pos + 1);
 
-    std::string ledPath = LED_GROUPS + unit + '_' + LED_FAULT;
+    std::string ledPath = ledGroups + unit + '_' + LED_FAULT;
 
     auto method = bus.new_method_call(service.c_str(), ledPath.c_str(),
                                       "org.freedesktop.DBus.Properties", "Set");
@@ -116,7 +115,7 @@ void action(sdbusplus::bus::bus& bus, const std::string& path, bool assert)
     {
         bus.call_noreply(method);
     }
-    catch (const sdbusplus::exception::exception& e)
+    catch (const sdbusplus::exception_t& e)
     {
         // Log an info message, system may not have all the LED Groups defined
         lg2::info("Failed to Assert LED Group, ERROR = {ERROR}", "ERROR", e);
@@ -125,7 +124,7 @@ void action(sdbusplus::bus::bus& bus, const std::string& path, bool assert)
     return;
 }
 
-void Add::created(sdbusplus::message::message& msg)
+void Add::created(sdbusplus::message_t& msg)
 {
     auto bus = msg.get_bus();
 
@@ -135,7 +134,7 @@ void Add::created(sdbusplus::message::message& msg)
     {
         msg.read(objectPath, interfaces);
     }
-    catch (const sdbusplus::exception::exception& e)
+    catch (const sdbusplus::exception_t& e)
     {
         lg2::error("Failed to parse created message, ERROR = {ERROR}", "ERROR",
                    e);
@@ -156,9 +155,7 @@ void Add::created(sdbusplus::message::message& msg)
 
     // Nothing else shows when a specific error log
     // has been created. Do it here.
-    // TODO:(phosphor-logging#25): support sdbusplus::message::object_path
-    // directly.
-    lg2::info("{PATH} created", "PATH", objectPath.str);
+    lg2::info("{PATH} created", "PATH", objectPath);
 
     auto attr = iter->second.find("Associations");
     if (attr == iter->second.end())
@@ -186,21 +183,21 @@ void Add::created(sdbusplus::message::message& msg)
     return;
 }
 
-void getLoggingSubTree(sdbusplus::bus::bus& bus, MapperResponseType& subtree)
+void getLoggingSubTree(sdbusplus::bus_t& bus, MapperResponseType& subtree)
 {
     auto depth = 0;
-    auto mapperCall = bus.new_method_call(MAPPER_BUSNAME, MAPPER_OBJ_PATH,
-                                          MAPPER_IFACE, "GetSubTree");
+    auto mapperCall = bus.new_method_call(mapperBusName, mapperObjPath,
+                                          mapperIntf, "GetSubTree");
     mapperCall.append("/");
     mapperCall.append(depth);
-    mapperCall.append(std::vector<Interface>({LOG_IFACE}));
+    mapperCall.append(std::vector<Interface>({logIntf}));
 
     try
     {
         auto mapperResponseMsg = bus.call(mapperCall);
         mapperResponseMsg.read(subtree);
     }
-    catch (const sdbusplus::exception::exception& e)
+    catch (const sdbusplus::exception_t& e)
     {
         lg2::error(
             "Failed to parse existing callouts subtree message, ERROR = {ERROR}",
@@ -208,7 +205,7 @@ void getLoggingSubTree(sdbusplus::bus::bus& bus, MapperResponseType& subtree)
     }
 }
 
-void Add::processExistingCallouts(sdbusplus::bus::bus& bus)
+void Add::processExistingCallouts(sdbusplus::bus_t& bus)
 {
     MapperResponseType mapperResponse;
 
@@ -239,7 +236,7 @@ void Add::processExistingCallouts(sdbusplus::bus::bus& bus)
         {
             reply.read(assoc);
         }
-        catch (const sdbusplus::exception::exception& e)
+        catch (const sdbusplus::exception_t& e)
         {
             lg2::error(
                 "Failed to parse existing callouts associations message, ERROR = {ERROR}",
@@ -265,7 +262,7 @@ void Add::processExistingCallouts(sdbusplus::bus::bus& bus)
     }
 }
 
-void Remove::removed(sdbusplus::message::message& msg)
+void Remove::removed(sdbusplus::message_t& msg)
 {
     auto bus = msg.get_bus();
 

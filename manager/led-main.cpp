@@ -17,6 +17,7 @@
 #include <CLI/CLI.hpp>
 #include <sdeventplus/event.hpp>
 
+#include <algorithm>
 #include <iostream>
 
 int main(int argc, char** argv)
@@ -44,7 +45,7 @@ int main(int argc, char** argv)
     phosphor::led::Manager manager(bus, systemLedMap, event);
 
     /** @brief sd_bus object manager */
-    sdbusplus::server::manager::manager objManager(bus, OBJPATH);
+    sdbusplus::server::manager_t objManager(bus, OBJPATH);
 
 #ifdef USE_LAMP_TEST
     if (std::filesystem::exists(LAMP_TEST_INDICATOR_FILE))
@@ -52,7 +53,7 @@ int main(int argc, char** argv)
         // we need to off all the LEDs.
         phosphor::led::utils::DBusHandler dBusHandler;
         std::vector<std::string> pysicalLedPaths = dBusHandler.getSubTreePaths(
-            phosphor::led::PHY_LED_PATH, phosphor::led::PHY_LED_IFACE);
+            phosphor::led::phyLedPath, phosphor::led::phyLedIntf);
 
         for (const auto& path : pysicalLedPaths)
         {
@@ -90,11 +91,14 @@ int main(int argc, char** argv)
 #endif
 
     /** Now create so many dbus objects as there are groups */
-    for (auto& grp : systemLedMap)
-    {
-        groups.emplace_back(std::make_unique<phosphor::led::Group>(
-            bus, grp.first, manager, serialize));
-    }
+    std::ranges::transform(
+        systemLedMap, std::back_inserter(groups),
+        [&bus, &manager, &serialize](
+            const std::pair<std::string,
+                            std::set<phosphor::led::Layout::LedAction>>& grp) {
+        return std::make_unique<phosphor::led::Group>(bus, grp.first, manager,
+                                                      serialize);
+    });
 
     // Attach the bus to sd_event to service user requests
     bus.attach_event(event.get(), SD_EVENT_PRIORITY_NORMAL);

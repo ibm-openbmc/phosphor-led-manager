@@ -10,10 +10,10 @@ namespace led
 {
 namespace utils
 {
-constexpr auto MAPPER_BUSNAME = "xyz.openbmc_project.ObjectMapper";
-constexpr auto MAPPER_OBJ_PATH = "/xyz/openbmc_project/object_mapper";
-constexpr auto MAPPER_IFACE = "xyz.openbmc_project.ObjectMapper";
-constexpr auto DBUS_PROPERTY_IFACE = "org.freedesktop.DBus.Properties";
+static constexpr auto mapperBusName = "xyz.openbmc_project.ObjectMapper";
+static constexpr auto mapperObjPath = "/xyz/openbmc_project/object_mapper";
+static constexpr auto mapperIntf = "xyz.openbmc_project.ObjectMapper";
+static constexpr auto proIntf = "org.freedesktop.DBus.Properties";
 
 using AssociationTuple = std::tuple<std::string, std::string, std::string>;
 using AssociationsProperty = std::vector<AssociationTuple>;
@@ -68,7 +68,7 @@ class DBusHandler
      *
      *  @return The Map to constructs all properties values
      *
-     *  @throw sdbusplus::exception::exception when it fails
+     *  @throw sdbusplus::exception_t when it fails
      */
     const PropertyMap getAllProperties(const std::string& objectPath,
                                        const std::string& interface) const;
@@ -81,7 +81,7 @@ class DBusHandler
      *
      *  @return The value of the property(type: variant)
      *
-     *  @throw sdbusplus::exception::exception when it fails
+     *  @throw sdbusplus::exception_t when it fails
      */
     const PropertyValue getProperty(const std::string& objectPath,
                                     const std::string& interface,
@@ -94,7 +94,7 @@ class DBusHandler
      *  @param[in] propertyName     -   D-Bus property name
      *  @param[in] value            -   The value to be set
      *
-     *  @throw sdbusplus::exception::exception when it fails
+     *  @throw sdbusplus::exception_t when it fails
      */
     void setProperty(const std::string& objectPath,
                      const std::string& interface,

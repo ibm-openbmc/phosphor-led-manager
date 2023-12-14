@@ -2,6 +2,8 @@
 
 #include <phosphor-logging/lg2.hpp>
 
+#include <algorithm>
+
 namespace phosphor
 {
 namespace led
@@ -20,7 +22,7 @@ bool LampTest::processLEDUpdates(const Manager::group& ledsAssert,
         // Physical LEDs will be updated during lamp test
         for (const auto& it : ledsDeAssert)
         {
-            std::string path = std::string(PHY_LED_PATH) + it.name;
+            std::string path = std::string(phyLedPath) + it.name;
             auto iter = std::find_if(
                 forceUpdateLEDs.begin(), forceUpdateLEDs.end(),
                 [&path](const auto& name) { return name == path; });
@@ -34,7 +36,7 @@ bool LampTest::processLEDUpdates(const Manager::group& ledsAssert,
 
         for (const auto& it : ledsAssert)
         {
-            std::string path = std::string(PHY_LED_PATH) + it.name;
+            std::string path = std::string(phyLedPath) + it.name;
             auto iter = std::find_if(
                 forceUpdateLEDs.begin(), forceUpdateLEDs.end(),
                 [&path](const auto& name) { return name == path; });
@@ -142,13 +144,13 @@ void LampTest::storePhysicalLEDsStates()
         uint8_t dutyOn{};
         try
         {
-            auto properties = dBusHandler.getAllProperties(path, PHY_LED_IFACE);
+            auto properties = dBusHandler.getAllProperties(path, phyLedIntf);
 
             state = std::get<std::string>(properties["State"]);
             period = std::get<uint16_t>(properties["Period"]);
             dutyOn = std::get<uint8_t>(properties["DutyOn"]);
         }
-        catch (const sdbusplus::exception::exception& e)
+        catch (const sdbusplus::exception_t& e)
         {
             lg2::error(
                 "Failed to get All properties, ERROR = {ERROR}, PATH = {PATH}",
@@ -180,7 +182,17 @@ void LampTest::start()
     }
 
     // Get paths of all the Physical LED objects
-    physicalLEDPaths = dBusHandler.getSubTreePaths(PHY_LED_PATH, PHY_LED_IFACE);
+    try
+    {
+        physicalLEDPaths = dBusHandler.getSubTreePaths(phyLedPath, phyLedIntf);
+    }
+    catch (const sdbusplus::exception_t& e)
+    {
+        lg2::error(
+            "Failed to call the SubTreePaths method: {ERROR}, ledPath: {PATH}, ledInterface: {INTERFACE}",
+            "ERROR", e, "PATH", phyLedPath, "INTERFACE", phyLedIntf);
+        return;
+    }
 
     // Get physical LEDs states before lamp test
     storePhysicalLEDsStates();
@@ -286,7 +298,7 @@ void LampTest::doHostLampTest(bool value)
                                 "xyz.openbmc_project.Led.Group", "Asserted",
                                 assertedValue);
     }
-    catch (const sdbusplus::exception::exception& e)
+    catch (const sdbusplus::exception_t& e)
     {
         lg2::error(
             "Failed to set Asserted property, ERROR = {ERROR}, PATH = {PATH}",
@@ -311,16 +323,12 @@ void LampTest::getPhysicalLEDNamesFromJson(const fs::path& path)
         // define the default JSON as empty
         const std::vector<std::string> empty{};
         auto forceLEDs = json.value("forceLEDs", empty);
-        for (auto& member : forceLEDs)
-        {
-            forceUpdateLEDs.push_back(PHY_LED_PATH + member);
-        }
+        std::ranges::transform(forceLEDs, std::back_inserter(forceUpdateLEDs),
+                               [](const auto& i) { return phyLedPath + i; });
 
         auto skipLEDs = json.value("skipLEDs", empty);
-        for (auto& member : skipLEDs)
-        {
-            skipUpdateLEDs.push_back(PHY_LED_PATH + member);
-        }
+        std::ranges::transform(skipLEDs, std::back_inserter(skipUpdateLEDs),
+                               [](const auto& i) { return phyLedPath + i; });
     }
     catch (const std::exception& e)
     {

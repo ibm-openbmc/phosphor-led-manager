@@ -16,8 +16,8 @@ namespace led
 {
 using namespace phosphor::led::utils;
 
-static constexpr auto PHY_LED_PATH = "/xyz/openbmc_project/led/physical/";
-static constexpr auto PHY_LED_IFACE = "xyz.openbmc_project.Led.Physical";
+static constexpr auto phyLedPath = "/xyz/openbmc_project/led/physical/";
+static constexpr auto phyLedIntf = "xyz.openbmc_project.Led.Physical";
 
 /** @class Manager
  *  @brief Manages group of LEDs and applies action on the elements of group
@@ -148,7 +148,7 @@ class Manager
 
   private:
     /** @brief sdbusplus handler */
-    sdbusplus::bus::bus& bus;
+    sdbusplus::bus_t& bus;
 
     /** Map of physical LED path to service name */
     std::unordered_map<std::string, std::string> phyLeds{};
