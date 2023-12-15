@@ -17,7 +17,7 @@ namespace led
 
 // Assert -or- De-assert
 bool Manager::setGroupState(const std::string& path, bool assert,
-                            group& ledsAssert, group& ledsDeAssert)
+                            ActionSet& ledsAssert, ActionSet& ledsDeAssert)
 {
     if (assert)
     {
@@ -31,8 +31,8 @@ bool Manager::setGroupState(const std::string& path, bool assert,
         }
     }
 
-    // This will contain the union of what's already in the asserted group
-    group desiredState{};
+    // This will contain the union of what's already in the asserted ActionSet
+    ActionSet desiredState{};
     for (const auto& grp : assertedGroups)
     {
         desiredState.insert(grp->cbegin(), grp->cend());
@@ -40,7 +40,7 @@ bool Manager::setGroupState(const std::string& path, bool assert,
 
     // Find difference between Combined and Desired to identify
     // which LEDs are getting altered
-    group transient{};
+    ActionSet transient{};
     std::set_difference(combinedState.begin(), combinedState.end(),
                         desiredState.begin(), desiredState.end(),
                         std::inserter(transient, transient.begin()), ledComp);
@@ -48,7 +48,7 @@ bool Manager::setGroupState(const std::string& path, bool assert,
     {
         // Find common LEDs between transient and Desired to know if some LEDs
         // are changing state and not really getting DeAsserted
-        group ledsTransient{};
+        ActionSet ledsTransient{};
         std::set_intersection(
             transient.begin(), transient.end(), desiredState.begin(),
             desiredState.end(),
@@ -80,7 +80,7 @@ bool Manager::setGroupState(const std::string& path, bool assert,
 
     // Now LEDs that are to be Asserted. These could either be fresh asserts
     // -or- change between [On]<-->[Blink]
-    group temp{};
+    ActionSet temp{};
     std::unique_copy(desiredState.begin(), desiredState.end(),
                      std::inserter(temp, temp.begin()), ledEqual);
     if (temp.size())
@@ -101,13 +101,14 @@ bool Manager::setGroupState(const std::string& path, bool assert,
 }
 
 void Manager::setLampTestCallBack(
-    std::function<bool(group& ledsAssert, group& ledsDeAssert)> callBack)
+    std::function<bool(ActionSet& ledsAssert, ActionSet& ledsDeAssert)>
+        callBack)
 {
     lampTestCallBack = callBack;
 }
 
 /** @brief Run through the map and apply action on the LEDs */
-void Manager::driveLEDs(group& ledsAssert, group& ledsDeAssert)
+void Manager::driveLEDs(ActionSet& ledsAssert, ActionSet& ledsDeAssert)
 {
 #ifdef USE_LAMP_TEST
     // Use the lampTestCallBack method and trigger the callback method in the
@@ -118,8 +119,8 @@ void Manager::driveLEDs(group& ledsAssert, group& ledsDeAssert)
         return;
     }
 #endif
-    group newReqChangedLeds;
-    std::vector<std::pair<group&, group&>> actionsVec = {
+    ActionSet newReqChangedLeds;
+    std::vector<std::pair<ActionSet&, ActionSet&>> actionsVec = {
         {reqLedsAssert, ledsAssert}, {reqLedsDeAssert, ledsDeAssert}};
 
     timer.setEnabled(false);
@@ -131,7 +132,7 @@ void Manager::driveLEDs(group& ledsAssert, group& ledsDeAssert)
     // prepare reqLedsAssert & reqLedsDeAssert
     for (auto pair : actionsVec)
     {
-        group tmpSet;
+        ActionSet tmpSet;
 
         // Discard current required LED actions, if these LEDs have new actions
         // in newReqChangedLeds.
@@ -239,8 +240,8 @@ std::string Manager::getPhysicalAction(Layout::Action action)
 
 void Manager::driveLedsHandler(void)
 {
-    group failedLedsAssert;
-    group failedLedsDeAssert;
+    ActionSet failedLedsAssert;
+    ActionSet failedLedsDeAssert;
 
     // This order of LED operation is important.
     if (reqLedsDeAssert.size())
