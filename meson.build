@@ -1,12 +1,12 @@
 project(
     'phosphor-ledmanager', 'cpp',
     version : '1.0.0',
-    meson_version: '>=0.58.0',
+    meson_version: '>=1.1.1',
     default_options: [
         'warning_level=3',
         'werror=true',
-        'cpp_std=c++20',
-        'buildtype=debugoptimized'
+        'cpp_std=c++23',
+        'buildtype=debugoptimized',
     ]
 )
 
@@ -28,28 +28,10 @@ conf_data.set('MONITOR_OPERATIONAL_STATUS', get_option('monitor-operational-stat
 conf_data.set('IBM_SAI', get_option('monitor-sai-status').enabled())
 
 sdbusplus_dep = dependency('sdbusplus')
+sdeventplus_dep = dependency('sdeventplus')
+phosphor_dbus_interfaces_dep = dependency('phosphor-dbus-interfaces')
+phosphor_logging_dep = dependency('phosphor-logging')
 
-sdeventplus_dep = dependency(
-    'sdeventplus',
-    fallback: [
-        'sdeventplus',
-        'sdeventplus_dep'
-    ],
-)
-phosphor_logging_dep = dependency(
-    'phosphor-logging',
-    fallback: [
-        'phosphor-logging',
-        'phosphor_logging_dep'
-    ],
-)
-phosphor_dbus_interfaces_dep = dependency(
-    'phosphor-dbus-interfaces',
-    fallback: [
-        'phosphor-dbus-interfaces',
-        'phosphor_dbus_interfaces_dep'
-    ],
-)
 prog_python = find_program('python3', required: true)
 realpath_prog = find_program('realpath')
 
@@ -69,10 +51,7 @@ endif
 if cpp.has_header('CLI/CLI.hpp')
     CLI11_dep = declare_dependency()
 else
-    CLI11_dep = dependency(
-        'CLI11',
-        fallback: [ 'CLI11', 'CLI11_dep' ],
-    )
+    CLI11_dep = dependency('CLI11')
 endif
 
 
@@ -118,9 +97,7 @@ install_data(
 )
 
 subdir('fault-monitor')
-
-build_tests = get_option('tests')
-if not build_tests.disabled()
+if get_option('tests').allowed()
   subdir('test')
 endif
 
