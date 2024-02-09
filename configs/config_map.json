@@ -2,6 +2,7 @@
     "CompatibleSystems": {
         "Bonnell": "ibm,bonnell",
         "Everest": "ibm,everest",
+        "Fuji": "ibm,fuji",
         "Rainier 1S4U": "ibm,rainier-1s4u",
         "Rainier 2U": "ibm,rainier-2u",
         "Rainier 2U Pass 1": "ibm,rainier-2u",
