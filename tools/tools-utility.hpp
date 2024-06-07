@@ -1,7 +1,6 @@
 #pragma once
 #include <sdbusplus/server.hpp>
 
-#include <algorithm>
 #include <iostream>
 #include <map>
 #include <string>

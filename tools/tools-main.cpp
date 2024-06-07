@@ -1,5 +1,3 @@
-#include "set-guarded-fru-leds.hpp"
-#include "set-leds-default-state.hpp"
 #include "toggle-fault-leds.hpp"
 
 #include <CLI/CLI.hpp>
@@ -21,13 +19,6 @@ int main(int argc, char** argv)
                "of the FRUs accordingly.")
             ->needs(functional);
 
-    auto setGuardedFruLeds = app.add_flag("-s, --setGuardedFruLeds",
-                                          "Set LEDs for guarded FRUs.");
-
-    auto defaultLedsSate = app.add_flag("-d, --defaultLedsState",
-                                        "Sets power, enclosure fault, SAI and "
-                                        "enclosure identify to default state.");
-
     CLI11_PARSE(app, argc, argv);
 
     try
@@ -36,22 +27,11 @@ int main(int argc, char** argv)
         {
             toggleFaultLeds(isFunctional);
         }
-
-        if (*setGuardedFruLeds)
-        {
-            setLEDForGuardedFru();
-        }
-
-        if (*defaultLedsSate)
-        {
-            setLedsDefaultState();
-        }
     }
     catch (const std::exception& ex)
     {
         std::cout << "Led tool failed with exception: " << ex.what()
                   << std::endl;
     }
-
     return 0;
 }
