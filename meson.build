@@ -97,6 +97,7 @@ install_data(
 )
 
 subdir('fault-monitor')
+subdir('tools')
 
 build_tests = get_option('tests')
 if not build_tests.disabled()
