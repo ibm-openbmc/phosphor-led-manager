@@ -10,5 +10,4 @@ ConditionPathExists=!/run/openbmc/chassis@0-on
 Type=oneshot
 Restart=no
 ExecStart=/usr/bin/env led-tool --functional %i --toggleFaultLeds
-ExecStart=/usr/bin/remove-association
 SyslogIdentifier=obmc-clear-all-fault-leds-and-remove-crit-association
