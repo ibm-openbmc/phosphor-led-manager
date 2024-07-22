@@ -1,15 +1,15 @@
 {
     "CompatibleSystems": {
-        "Bonnell": "ibm,bonnell",
-        "Everest": "ibm,everest",
-        "Fuji": "ibm,fuji",
-        "Rainier 1S4U": "ibm,rainier-1s4u",
-        "Rainier 2U": "ibm,rainier-2u",
-        "Rainier 2U Pass 1": "ibm,rainier-2u",
-        "Rainier 4U": "ibm,rainier-4u",
-        "Rainier 4U Pass 1": "ibm,rainier-4u",
-        "Blueridge 1S4U": "ibm,blueridge-1s4u",
-        "Blueridge 2S2U": "ibm,blueridge-2u",
-        "Blueridge 2S4U": "ibm,blueridge-4u"
+        "Bonnell": "com.ibm.Hardware.Chassis.Model.Bonnell",
+        "Everest": "com.ibm.Hardware.Chassis.Model.Everest",
+        "Fuji": "com.ibm.Hardware.Chassis.Model.Fuji",
+        "Rainier 1S4U": "com.ibm.Hardware.Chassis.Model.Rainier1S4U",
+        "Rainier 2U": "com.ibm.Hardware.Chassis.Model.Rainier2U",
+        "Rainier 2U Pass 1": "com.ibm.Hardware.Chassis.Model.Rainier2U",
+        "Rainier 4U": "com.ibm.Hardware.Chassis.Model.Rainier4U",
+        "Rainier 4U Pass 1": "com.ibm.Hardware.Chassis.Model.Rainier4U",
+        "Blueridge 1S4U": "com.ibm.Hardware.Chassis.Model.BlueRidge1S4U",
+        "Blueridge 2S2U": "com.ibm.Hardware.Chassis.Model.BlueRidge2U",
+        "Blueridge 2S4U": "com.ibm.Hardware.Chassis.Model.BlueRidge4U"
     }
 }
