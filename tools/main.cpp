@@ -1,3 +1,4 @@
+#include "set-guarded-fru-leds.hpp"
 #include "toggle-fault-leds.hpp"
 
 #include <CLI/CLI.hpp>
@@ -19,6 +20,9 @@ int main(int argc, char** argv)
                "of the FRUs hosted under PIM accordingly.")
             ->needs(functional);
 
+    auto setGuardedFruLeds = app.add_flag("-s, --setGuardedFruLeds",
+                                          "Set LEDs for guarded FRUs.");
+
     CLI11_PARSE(app, argc, argv);
 
     try
@@ -26,6 +30,11 @@ int main(int argc, char** argv)
         if (*toggleFaultLed)
         {
             toggleFaultLeds(isFunctional);
+        }
+
+        if (*setGuardedFruLeds)
+        {
+            setLEDForGuardedFru();
         }
     }
     catch (const std::exception& ex)
