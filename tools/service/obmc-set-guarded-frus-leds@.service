@@ -9,5 +9,5 @@ ConditionPathExists=!/run/openbmc/chassis@0-on
 [Service]
 Type=oneshot
 Restart=no
-ExecStart=/usr/bin/ led-tool --setGuardedFruLeds
+ExecStart=/usr/bin/env led-tool --setGuardedFruLeds
 SyslogIdentifier=omc-set-guarded-fru-leds
