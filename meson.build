@@ -89,9 +89,7 @@ configure_file(output: 'config.h',
 )
 
 install_data(
-    ['scripts/led-set-all-groups-asserted.sh',
-     'scripts/oem/set-guarded-fru-leds.sh',
-     'scripts/oem/set-power-button-led-to-default-state.sh'],
+    ['scripts/led-set-all-groups-asserted.sh'],
     install_mode: 'rwxr-xr-x',
     install_dir: get_option('bindir')
 )
