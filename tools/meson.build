@@ -4,7 +4,8 @@ tool_sources = [
 configuration_inc = include_directories('.')
 
 services = ['service/obmc-clear-all-fault-leds-and-remove-crit-association@.service',
-            'service/obmc-set-guarded-frus-leds@.service']
+            'service/obmc-set-guarded-frus-leds@.service',
+            'service/obmc-set-leds-default-state@.service']
             
 systemd_system_unit_dir = dependency('systemd').get_variable(
         'systemdsystemunitdir')

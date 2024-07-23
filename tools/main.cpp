@@ -1,4 +1,5 @@
 #include "set-guarded-fru-leds.hpp"
+#include "set-leds-default-state.hpp"
 #include "toggle-fault-leds.hpp"
 
 #include <CLI/CLI.hpp>
@@ -23,6 +24,10 @@ int main(int argc, char** argv)
     auto setGuardedFruLeds = app.add_flag("-s, --setGuardedFruLeds",
                                           "Set LEDs for guarded FRUs.");
 
+    auto defaultLedsSate = app.add_flag("-d, --defaultLedsState",
+                                        "Sets power, enclosure fault, SAI and "
+                                        "enclosure identify to default state.");
+
     CLI11_PARSE(app, argc, argv);
 
     try
@@ -35,6 +40,11 @@ int main(int argc, char** argv)
         if (*setGuardedFruLeds)
         {
             setLEDForGuardedFru();
+        }
+
+        if (*defaultLedsSate)
+        {
+            setLedsDefaultState();
         }
     }
     catch (const std::exception& ex)
