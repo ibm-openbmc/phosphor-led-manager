@@ -1,3 +1,4 @@
+#include "clear-psu-fault-leds.hpp"
 #include "set-guarded-fru-leds.hpp"
 #include "set-leds-default-state.hpp"
 #include "toggle-fault-leds.hpp"
@@ -28,6 +29,9 @@ int main(int argc, char** argv)
                                         "Sets power, enclosure fault, SAI and "
                                         "enclosure identify to default state.");
 
+    auto clearPsuFaultLed = app.add_flag("-c, --clearPsuFaultLed",
+                                         "Clears PSU fault LEDs.");
+
     CLI11_PARSE(app, argc, argv);
 
     try
@@ -45,6 +49,11 @@ int main(int argc, char** argv)
         if (*defaultLedsSate)
         {
             setLedsDefaultState();
+        }
+
+        if (*clearPsuFaultLed)
+        {
+            clearPsuFaultLeds();
         }
     }
     catch (const std::exception& ex)
