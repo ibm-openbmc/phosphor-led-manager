@@ -49,6 +49,48 @@ MapperResponse
 }
 
 /**
+ * @brief An API to get associated object paths.
+ *
+ * @param[in] associationPath - The path to look for the association endpoints.
+ * @param[in] root - The root of the tree to look into.
+ * @param[in] depth - The maximum depth of the tree past the root to search.
+ * @param[in] interfaces - Optional list of interfaces to constrain the search.
+ * @return ListOfObjectPaths - List of object paths associted.
+ */
+using ListOfObjectPaths = std::vector<std::string>;
+ListOfObjectPaths GetAssociatedSubTreePaths(
+    const sdbusplus::message::object_path& associationPath,
+    const sdbusplus::message::object_path& root, const int32_t depth,
+    const std::vector<std::string>& interfaces)
+{
+    auto bus = sdbusplus::bus::new_default();
+    auto mapperCall = bus.new_method_call("xyz.openbmc_project.ObjectMapper",
+                                          "/xyz/openbmc_project/object_mapper",
+                                          "xyz.openbmc_project.ObjectMapper",
+                                          "GetAssociatedSubTreePaths");
+    mapperCall.append(associationPath);
+    mapperCall.append(root);
+    mapperCall.append(depth);
+    mapperCall.append(interfaces);
+
+    ListOfObjectPaths result = {};
+
+    try
+    {
+        auto response = bus.call(mapperCall);
+
+        response.read(result);
+    }
+    catch (const sdbusplus::exception_t& e)
+    {
+        std::cerr
+            << "GetAssociatedSubTreePaths mapper call failed with exception: "
+            << e.what() << std::endl;
+    }
+    return result;
+}
+
+/**
  * @brief Templated API to set D-Bus property.
  *
  * @param[in] serviceName - D-Bus service name hosting the object path.
@@ -76,7 +118,7 @@ void setProperty(const std::string& serviceName, const std::string& objectPath,
     }
     catch (const sdbusplus::exception::SdBusError& e)
     {
-        std::cout << "Set property: " << property
+        std::cerr << "Set property: " << property
                   << " failed for path: " << objectPath
                   << " with error: " << e.what() << std::endl;
     }
@@ -112,7 +154,7 @@ T getProperty(const std::string& serviceName, const std::string& objectPath,
     }
     catch (const sdbusplus::exception_t& e)
     {
-        std::cout << "Get property: " << property
+        std::cerr << "Get property: " << property
                   << " failed for path: " << objectPath
                   << " with error: " << e.what() << std::endl;
     }
