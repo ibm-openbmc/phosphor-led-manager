@@ -46,6 +46,15 @@ void clearPsuFaultLeds()
 
     for (const auto& [objectPath, serviceInterfaceMap] : subTree)
     {
+        // Find the service which hosts the current objectPath.
+        if (!serviceInterfaceMap.contains(
+                "xyz.openbmc_project.Inventory.Manager"))
+        {
+            // If this object path is not hosted by inventory manager service,
+            // do not take any action.
+            continue;
+        }
+
         auto retryCounter = MAX_RETRY;
 
         while (retryCounter != 0)
