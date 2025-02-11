@@ -38,6 +38,8 @@ void setLEDForGuardedFru()
         return;
     }
 
+    utility::ObjectMap objectMap;
+
     for (const auto& [objectPath, serviceInterfceMap] : subTree)
     {
         auto retVal = utility::getProperty<std::variant<
@@ -55,10 +57,13 @@ void setLEDForGuardedFru()
 
                 if (guardedPath.find("dimm") != std::string::npos)
                 {
-                    utility::setProperty<bool>(
-                        "xyz.openbmc_project.Inventory.Manager", guardedPath,
-                        "xyz.openbmc_project.State.Decorator.OperationalStatus",
-                        "Functional", false);
+                    objectMap.emplace(
+                        guardedPath,
+                        std::map<std::string,
+                                 std::map<std::string, std::variant<bool>>>{
+                            {"xyz.openbmc_project.State.Decorator.OperationalStatus",
+                             {{"Functional", false}}}});
+
                     continue;
                 }
 
@@ -68,14 +73,17 @@ void setLEDForGuardedFru()
                     // PIM. Which is not tied to LEDs.
                     if (guardedPath.find("unit") != std::string::npos)
                     {
-                        utility::setProperty<bool>(
-                            "xyz.openbmc_project.Inventory.Manager",
+                        objectMap.emplace(
                             guardedPath,
-                            "xyz.openbmc_project.State.Decorator.OperationalStatus",
-                            "Functional", false);
+                            std::map<std::string,
+                                     std::map<std::string, std::variant<bool>>>{
+                                {"xyz.openbmc_project.State.Decorator.OperationalStatus",
+                                 {{"Functional", false}}}});
                     }
                 }
             }
         }
     }
+
+    utility::notifyPIM(std::move(objectMap));
 }
