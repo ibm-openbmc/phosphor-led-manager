@@ -185,4 +185,47 @@ bool isChassisOn()
     // In any error condition assuming chassis is off.
     return false;
 }
+
+using ObjectMap =
+    std::map<sdbusplus::message::object_path,
+             std::map<std::string, std::map<std::string, std::variant<bool>>>>;
+
+/**
+ * @brief An API to call PIM
+ *
+ * This API calls notify method of PIM to update the property value.
+ *
+ * @param[in] objectMap - Map of object path, interface, property and its value.
+ */
+void notifyPIM(ObjectMap&& objectMap)
+{
+    try
+    {
+        for (const auto& objectKeyValue : objectMap)
+        {
+            auto objectPath = objectMap.extract(objectKeyValue.first);
+
+            if (objectPath.key().str.find("/xyz/openbmc_project/inventory",
+                                          0) != std::string::npos)
+            {
+                objectPath.key() = objectPath.key().str.replace(
+                    0, strlen("/xyz/openbmc_project/inventory"), "");
+                objectMap.insert(std::move(objectPath));
+            }
+        }
+
+        auto bus = sdbusplus::bus::new_default();
+        auto pimMsg = bus.new_method_call(
+            "xyz.openbmc_project.Inventory.Manager",
+            "/xyz/openbmc_project/inventory",
+            "xyz.openbmc_project.Inventory.Manager", "Notify");
+        pimMsg.append(std::move(objectMap));
+        bus.call(pimMsg);
+    }
+    catch (const sdbusplus::exception::SdBusError& e)
+    {
+        std::cerr << "Notify PIM to update property value failed with error: "
+                  << e.what() << std::endl;
+    }
+}
 } // namespace utility

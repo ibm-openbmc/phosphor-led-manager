@@ -64,10 +64,10 @@ void toggleFaultLeds(const bool isFunctional)
             continue;
         }
 
-        utility::setProperty<bool>(
-            "xyz.openbmc_project.Inventory.Manager", objectPath,
-            "xyz.openbmc_project.State.Decorator.OperationalStatus",
-            "Functional", isFunctional);
+        utility::notifyPIM(
+            {{objectPath,
+              {{"xyz.openbmc_project.State.Decorator.OperationalStatus",
+                {{"Functional", isFunctional}}}}}});
 
         if (std::any_of(frusWithoutLED.cbegin(), frusWithoutLED.cend(),
                         [&objectPath](const std::string& aFru) {

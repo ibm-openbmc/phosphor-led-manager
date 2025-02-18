@@ -84,10 +84,10 @@ void clearPsuFaultLeds()
             return;
         }
 
-        utility::setProperty<bool>(
-            "xyz.openbmc_project.Inventory.Manager", objectPath,
-            "xyz.openbmc_project.State.Decorator.OperationalStatus",
-            "Functional", true);
+        utility::notifyPIM(
+            {{objectPath,
+              {{"xyz.openbmc_project.State.Decorator.OperationalStatus",
+                {{"Functional", true}}}}}});
 
         auto retVal =
             utility::getProperty<std::variant<std::vector<std::string>>>(
