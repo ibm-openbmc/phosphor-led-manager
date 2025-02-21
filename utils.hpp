@@ -32,6 +32,10 @@ using DbusProperty = std::string;
 // The Map to constructs all properties values of the interface
 using PropertyMap = std::map<DbusProperty, PropertyValue>;
 
+using ObjectMap =
+    std::map<sdbusplus::message::object_path,
+             std::map<std::string, std::map<std::string, PropertyValue>>>;
+
 /**
  *  @class DBusHandler
  *
@@ -111,6 +115,18 @@ class DBusHandler
     const std::vector<std::string>
         getSubTreePaths(const std::string& objectPath,
                         const std::string& interface);
+
+    /**
+     * @brief An API to call PIM
+     *
+     * This API calls notify method of PIM to update the property value.
+     *
+     * @param[in] objectMap - Map of object path, interface, property and its
+     * value.
+     *
+     * @throw sdbusplus::exception_t when it fails
+     */
+    void notifyPIM(ObjectMap&& objectMap);
 };
 
 } // namespace utils

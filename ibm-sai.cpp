@@ -54,10 +54,10 @@ void setOperationalStatus(const std::string& path, bool value)
         try
         {
             utils::PropertyValue functionalValue{value};
-            utils::DBusHandler().setProperty(
-                fruInstancePath,
-                "xyz.openbmc_project.State.Decorator.OperationalStatus",
-                "Functional", functionalValue);
+            utils::DBusHandler().notifyPIM(
+                {{fruInstancePath,
+                  {{"xyz.openbmc_project.State.Decorator.OperationalStatus",
+                    {{"Functional", functionalValue}}}}}});
         }
         catch (const sdbusplus::exception::SdBusError& e)
         {

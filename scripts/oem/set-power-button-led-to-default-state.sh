@@ -6,8 +6,8 @@
 current_chassis_status=$(busctl get-property xyz.openbmc_project.State.Chassis /xyz/openbmc_project/state/chassis0 xyz.openbmc_project.State.Chassis CurrentPowerState | cut -d" " -f2)
 
 if [ "${current_chassis_status}" = "\"xyz.openbmc_project.State.Chassis.PowerState.On\"" ]; then
-	    echo "Current chassis power state is , $current_chassis_status . Exit set-power-button-led-to-default-state.sh script successfully without initialising the LEDs"
-	    exit 0
+    echo "Current chassis power state is , $current_chassis_status . Exit set-power-button-led-to-default-state.sh script successfully without initialising the LEDs"
+    exit 0
 fi
 
 # Explicitly set Blink as the default state
