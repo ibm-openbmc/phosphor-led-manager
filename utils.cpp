@@ -126,6 +126,30 @@ const std::vector<std::string>
     return paths;
 }
 
+void DBusHandler::notifyPIM(ObjectMap&& objectMap)
+{
+    for (const auto& objectKeyValue : objectMap)
+    {
+        auto objectPath = objectMap.extract(objectKeyValue.first);
+
+        if (objectPath.key().str.find("/xyz/openbmc_project/inventory", 0) !=
+            std::string::npos)
+        {
+            objectPath.key() = objectPath.key().str.replace(
+                0, strlen("/xyz/openbmc_project/inventory"), "");
+            objectMap.insert(std::move(objectPath));
+        }
+    }
+
+    auto bus = sdbusplus::bus::new_default();
+    auto pimMsg =
+        bus.new_method_call("xyz.openbmc_project.Inventory.Manager",
+                            "/xyz/openbmc_project/inventory",
+                            "xyz.openbmc_project.Inventory.Manager", "Notify");
+    pimMsg.append(std::move(objectMap));
+    bus.call(pimMsg);
+}
+
 } // namespace utils
 } // namespace led
 } // namespace phosphor
