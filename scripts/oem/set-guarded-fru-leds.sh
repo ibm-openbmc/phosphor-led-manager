@@ -37,9 +37,15 @@ do
         echo "$line2" | grep "dimm" >/dev/null
         rc=$?
         if [ $rc -eq 0 ]; then
-            busctl set-property xyz.openbmc_project.Inventory.Manager \
-                "$line2" xyz.openbmc_project.State.Decorator.OperationalStatus \
-                Functional b false;
+            echo "$line2" | grep "/xyz/openbmc_project/inventory" >/dev/null
+            rc=$?
+            if [ $rc -eq 0 ]; then
+                line2=$(echo "$line2" | sed 's|/xyz/openbmc_project/inventory||');
+                busctl call xyz.openbmc_project.Inventory.Manager \
+                    /xyz/openbmc_project/inventory xyz.openbmc_project.Inventory.Manager \
+                    Notify a\{oa\{sa\{sv\}\}\} \
+                    1 "$line2" 1 "xyz.openbmc_project.State.Decorator.OperationalStatus" 1 "Functional" b false;
+            fi
         fi
 
         #check for guarded processors and update its operational status.
@@ -49,9 +55,15 @@ do
             echo "$line2" | grep "unit\|core" >/dev/null
             rc=$?
             if [ $rc -ne 0 ]; then
-                busctl set-property xyz.openbmc_project.Inventory.Manager \
-                    "$line2" xyz.openbmc_project.State.Decorator.OperationalStatus \
-                    Functional b false;
+                echo "$line2" | grep "/xyz/openbmc_project/inventory" >/dev/null
+                rc=$?
+                if [ $rc -eq 0 ]; then
+                    line2=$(echo "$line2" | sed 's|/xyz/openbmc_project/inventory||');
+                    busctl call xyz.openbmc_project.Inventory.Manager \
+                        /xyz/openbmc_project/inventory xyz.openbmc_project.Inventory.Manager \
+                        Notify a\{oa\{sa\{sv\}\}\} \
+                        1 "$line2" 1 "xyz.openbmc_project.State.Decorator.OperationalStatus" 1 "Functional" b false;
+                fi
             fi
         fi
     done
