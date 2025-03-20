@@ -1,30 +1,43 @@
 project(
-    'phosphor-ledmanager', 'cpp',
-    version : '1.0.0',
+    'phosphor-ledmanager',
+    'cpp',
+    version: '1.0.0',
     meson_version: '>=1.1.1',
     default_options: [
         'warning_level=3',
         'werror=true',
         'cpp_std=c++23',
         'buildtype=debugoptimized',
-    ]
+    ],
 )
 
 conf_data = configuration_data()
 conf_data.set_quoted('BUSNAME', 'xyz.openbmc_project.LED.GroupManager')
 conf_data.set_quoted('OBJPATH', '/xyz/openbmc_project/led/groups')
-conf_data.set_quoted('LED_JSON_FILE', '/usr/share/phosphor-led-manager/led-group-config.json')
-conf_data.set_quoted('SAVED_GROUPS_FILE', '/var/lib/phosphor-led-manager/savedGroups')
+conf_data.set_quoted(
+    'LED_JSON_FILE',
+    '/usr/share/phosphor-led-manager/led-group-config.json',
+)
+conf_data.set_quoted(
+    'SAVED_GROUPS_FILE',
+    '/var/lib/phosphor-led-manager/savedGroups',
+)
 conf_data.set_quoted('CALLOUT_FWD_ASSOCIATION', 'callout')
 conf_data.set_quoted('CALLOUT_REV_ASSOCIATION', 'fault')
 conf_data.set_quoted('ELOG_ENTRY', 'entry')
 conf_data.set_quoted('LED_FAULT', 'fault')
-conf_data.set_quoted('LAMP_TEST_INDICATOR_FILE', '/var/lib/phosphor-led-manager/lampTestOn')
+conf_data.set_quoted(
+    'LAMP_TEST_INDICATOR_FILE',
+    '/var/lib/phosphor-led-manager/lampTestOn',
+)
 
 conf_data.set('CLASS_VERSION', 1)
 conf_data.set('LED_USE_JSON', get_option('use-json').enabled())
 conf_data.set('USE_LAMP_TEST', get_option('use-lamp-test').enabled())
-conf_data.set('MONITOR_OPERATIONAL_STATUS', get_option('monitor-operational-status').enabled())
+conf_data.set(
+    'MONITOR_OPERATIONAL_STATUS',
+    get_option('monitor-operational-status').enabled(),
+)
 conf_data.set('IBM_SAI', get_option('monitor-sai-status').enabled())
 
 sdbusplus_dep = dependency('sdbusplus')
@@ -44,7 +57,7 @@ else
         include_directories: [
             'subprojects/nlohmann/single_include',
             'subprojects/nlohmann/single_include/nlohmann',
-        ]
+        ],
     )
 endif
 
@@ -61,14 +74,16 @@ has_cereal = cpp.has_header_symbol(
     'cereal/cereal.hpp',
     'cereal::specialize',
     dependencies: cereal_dep,
-    required: false)
+    required: false,
+)
 if not has_cereal
     cereal_opts = import('cmake').subproject_options()
     cereal_opts.add_cmake_defines({'BUILD_TESTS': 'OFF'})
     cereal_proj = import('cmake').subproject(
         'cereal',
         options: cereal_opts,
-        required: false)
+        required: false,
+    )
     assert(cereal_proj.found(), 'cereal is required')
     cereal_dep = cereal_proj.dependency('cereal')
 endif
@@ -84,14 +99,12 @@ deps = [
 
 subdir('manager')
 
-configure_file(output: 'config.h',
-    configuration: conf_data
-)
+configure_file(output: 'config.h', configuration: conf_data)
 
 install_data(
     ['scripts/led-set-all-groups-asserted.sh'],
     install_mode: 'rwxr-xr-x',
-    install_dir: get_option('bindir')
+    install_dir: get_option('bindir'),
 )
 
 subdir('fault-monitor')
@@ -99,9 +112,11 @@ subdir('tools')
 
 build_tests = get_option('tests')
 if not build_tests.disabled()
-  subdir('test')
+    subdir('test')
 endif
 
-install_subdir('configs',
+install_subdir(
+    'configs',
     install_dir: get_option('datadir') / 'phosphor-led-manager',
-    strip_directory: true)
+    strip_directory: true,
+)

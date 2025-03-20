@@ -1,21 +1,12 @@
-fault_monitor_sources = [
-    'monitor-main.cpp',
-]
+fault_monitor_sources = ['monitor-main.cpp']
 
 if get_option('monitor-operational-status').enabled()
-    fault_monitor_sources += [
-        '../utils.cpp',
-        'operational-status-monitor.cpp',
-        ]
+    fault_monitor_sources += ['../utils.cpp', 'operational-status-monitor.cpp']
     if get_option('monitor-sai-status').enabled()
-        fault_monitor_sources += [
-            '../ibm-sai.cpp'
-        ]
+        fault_monitor_sources += ['../ibm-sai.cpp']
     endif
 else
-    fault_monitor_sources += [
-        'fru-fault-monitor.cpp',
-        ]
+    fault_monitor_sources += ['fru-fault-monitor.cpp']
 endif
 
 executable(
@@ -24,5 +15,5 @@ executable(
     include_directories: ['.', '../'],
     dependencies: deps,
     install: true,
-    install_dir: get_option('bindir')
+    install_dir: get_option('bindir'),
 )
