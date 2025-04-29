@@ -8,37 +8,35 @@ if not gtest_dep.found() or not gmock_dep.found()
                 dependency('threads'),
                 gtest_proj.dependency('gtest'),
                 gtest_proj.dependency('gtest_main'),
-            ]
+            ],
         )
         gmock_dep = gtest_proj.dependency('gmock')
-  else
+    else
         assert(
             not get_option('tests').enabled(),
-            'Googletest is required if tests are enabled'
+            'Googletest is required if tests are enabled',
         )
-  endif
+    endif
 endif
 
 test_sources = [
-  '../manager/manager.cpp',
-  '../manager/serialize.cpp',
-  '../utils.cpp'
+    '../manager/manager.cpp',
+    '../manager/serialize.cpp',
+    '../utils.cpp',
 ]
 
-tests = [
-  'utest.cpp',
-  'utest-serialize.cpp',
-  'utest-led-json.cpp',
-]
+tests = ['utest.cpp', 'utest-serialize.cpp', 'utest-led-json.cpp']
 
 foreach t : tests
-  test(t, executable(t.underscorify(), t,
-                     test_sources,
-                     include_directories: ['..', '../manager/'],
-                     dependencies: [
-                         gtest_dep,
-                         gmock_dep,
-                         deps
-                         ]),
-       workdir: meson.current_source_dir())
+    test(
+        t,
+        executable(
+            t.underscorify(),
+            t,
+            test_sources,
+            include_directories: ['..', '../manager/'],
+            dependencies: [gtest_dep, gmock_dep, deps],
+        ),
+        workdir: meson.current_source_dir(),
+    )
 endforeach
