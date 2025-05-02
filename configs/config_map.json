@@ -6,7 +6,7 @@
         "Rainier 4U": "com.ibm.Hardware.Chassis.Model.Rainier4U",
         "Rainier 4U Pass 1": "com.ibm.Hardware.Chassis.Model.Rainier4U",
         "Everest": "com.ibm.Hardware.Chassis.Model.Everest",
-        "Bonnell": "com.ibm.Hardware.Chassis.Model.Bonnell",
+        "Balcones": "com.ibm.Hardware.Chassis.Model.Balcones",
         "Blueridge 1S4U": "com.ibm.Hardware.Chassis.Model.BlueRidge1S4U",
         "Blueridge 2U": "com.ibm.Hardware.Chassis.Model.BlueRidge2U",
         "Blueridge 2U Pass 1": "com.ibm.Hardware.Chassis.Model.BlueRidge2U",
