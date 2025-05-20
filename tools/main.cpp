@@ -1,6 +1,7 @@
 #include "clear-psu-fault-leds.hpp"
 #include "set-guarded-fru-leds.hpp"
 #include "set-leds-default-state.hpp"
+#include "sync-fault-leds.hpp"
 #include "toggle-fault-leds.hpp"
 
 #include <CLI/CLI.hpp>
@@ -32,6 +33,14 @@ int main(int argc, char** argv)
     auto clearPsuFaultLed = app.add_flag("-c, --clearPsuFaultLed",
                                          "Clears PSU fault LEDs.");
 
+    std::string objectPath;
+    auto objectPathOption = app.add_option("-o, --object", objectPath,
+                                           "Object path of the FRU.");
+    auto syncFaultLed =
+        app.add_flag("-q, --syncFaultLed",
+                     "Syncs fault LEDs to functional state of the FRU.")
+            ->needs(objectPathOption);
+
     CLI11_PARSE(app, argc, argv);
 
     try
@@ -54,6 +63,11 @@ int main(int argc, char** argv)
         if (*clearPsuFaultLed)
         {
             clearPsuFaultLeds();
+        }
+
+        if (!syncFaultLed->empty())
+        {
+            doSyncFaultLed(objectPath);
         }
     }
     catch (const std::exception& ex)
