@@ -10,34 +10,6 @@
 namespace utility
 {
 
-// This covers mostly all the data type supported over Dbus for a property.
-// clang-format off
-using DbusVariantType = std::variant<
-    std::monostate,
-    std::vector<std::tuple<std::string, std::string, std::string>>,
-    std::vector<std::string>,
-    std::vector<double>,
-    std::string,
-    int64_t,
-    uint64_t,
-    double,
-    int32_t,
-    uint32_t,
-    int16_t,
-    uint16_t,
-    uint8_t,
-    bool,
-    std::vector<uint32_t>,
-    std::vector<uint16_t>,
-    sdbusplus::message::object_path,
-    std::tuple<uint64_t, std::vector<std::tuple<std::string, std::string, double, uint64_t>>>,
-    std::vector<std::tuple<std::string, std::string>>,
-    std::vector<std::tuple<uint32_t, std::vector<uint32_t>>>,
-    std::vector<std::tuple<uint32_t, size_t>>,
-    std::vector<std::tuple<sdbusplus::message::object_path, std::string,
-                           std::string, std::string>>
->;
-
 /**
  * @brief An API to make GetSubTree mapper call.
  *
@@ -161,25 +133,21 @@ void setProperty(const std::string& serviceName, const std::string& objectPath,
  * @param[in] property - D-Bus property whose value is to be fetched.
  * @return Value of the property.
  */
-DbusVariantType getProperty(const std::string& serviceName, const std::string& objectPath,
+template <typename T>
+T getProperty(const std::string& serviceName, const std::string& objectPath,
               const std::string& interface, const std::string& property)
 {
-    DbusVariantType result;
-
-    if(serviceName.empty() || objectPath.empty() || interface.empty() || property.empty())
-    {
-        std::cout << "One of the parameters required to make Dbus get call is empty" << std::endl;
-        return result;
-    }
-
-    try
-    {
-        auto bus = sdbusplus::bus::new_default();
-        auto mapperCall =
+    auto bus = sdbusplus::bus::new_default();
+    auto mapperCall =
         bus.new_method_call(serviceName.c_str(), objectPath.c_str(),
                             "org.freedesktop.DBus.Properties", "Get");
     mapperCall.append(interface);
     mapperCall.append(property);
+
+    T result = {};
+
+    try
+    {
         auto response = bus.call(mapperCall);
 
         response.read(result);
@@ -201,7 +169,7 @@ DbusVariantType getProperty(const std::string& serviceName, const std::string& o
  */
 bool isChassisOn()
 {
-    auto retVal = getProperty(
+    auto retVal = getProperty<std::variant<std::string>>(
         "xyz.openbmc_project.State.Chassis0",
         "/xyz/openbmc_project/state/chassis0",
         "xyz.openbmc_project.State.Chassis", "CurrentPowerState");

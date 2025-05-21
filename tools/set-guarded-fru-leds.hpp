@@ -42,7 +42,8 @@ void setLEDForGuardedFru()
 
     for (const auto& [objectPath, serviceInterfceMap] : subTree)
     {
-        auto retVal = utility::getProperty(
+        auto retVal = utility::getProperty<std::variant<
+            std::vector<std::tuple<std::string, std::string, std::string>>>>(
             "org.open_power.HardwareIsolation", objectPath,
             "xyz.openbmc_project.Association.Definitions", "Associations");
 
