@@ -78,10 +78,11 @@ void toggleFaultLeds(const bool isFunctional)
             continue;
         }
 
-        auto retVal = utility::getProperty("xyz.openbmc_project.ObjectMapper",
-                                           objectPath + "/fault_identifying",
-                                           "xyz.openbmc_project.Association",
-                                           "endpoints");
+        auto retVal =
+            utility::getProperty<std::variant<std::vector<std::string>>>(
+                "xyz.openbmc_project.ObjectMapper",
+                objectPath + "/fault_identifying",
+                "xyz.openbmc_project.Association", "endpoints");
 
         if (auto endpoints = std::get_if<std::vector<std::string>>(&retVal))
         {
