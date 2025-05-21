@@ -98,12 +98,15 @@ ListOfObjectPaths GetAssociatedSubTreePaths(
  * @param[in] interface - D-Bus interface hosting the property.
  * @param[in] property - D-Bus property to be set.
  * @param[in] value - Value to be set.
+ *
+ * @return On success, returns true, false otherwise.
  */
 template <typename T>
-void setProperty(const std::string& serviceName, const std::string& objectPath,
+bool setProperty(const std::string& serviceName, const std::string& objectPath,
                  const std::string& interface, const std::string& property,
-                 const std::variant<T>& value)
+                 const std::variant<T>& value) noexcept
 {
+    bool l_rc{true};
     try
     {
         auto bus = sdbusplus::bus::new_default();
@@ -121,7 +124,9 @@ void setProperty(const std::string& serviceName, const std::string& objectPath,
         std::cerr << "Set property: " << property
                   << " failed for path: " << objectPath
                   << " with error: " << e.what() << std::endl;
+        l_rc = false;
     }
+    return l_rc;
 }
 
 /**
