@@ -6,6 +6,7 @@
 #include <sdeventplus/event.hpp>
 #include <sdeventplus/utility/timer.hpp>
 
+#include <chrono>
 #include <set>
 #include <string>
 #include <unordered_map>
@@ -177,6 +178,11 @@ class Manager
 
     /** @brief Contains the required set of deassert LEDs action */
     ActionSet reqLedsDeAssert;
+
+    /** @brief Map to store the last error time for physical LED paths */
+    std::unordered_map<std::string,
+                       std::chrono::time_point<std::chrono::steady_clock>>
+        physicalLEDErrors;
 
     /** @brief LEDs handler callback */
     void driveLedsHandler();
