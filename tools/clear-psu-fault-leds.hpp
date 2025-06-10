@@ -18,19 +18,27 @@
  *
  * @param[in] overrideChassisOnCheck - Flag to override chassis on check.
  */
-void clearPsuFaultLeds(
-    [[maybe_unused]] const bool overrideChassisOnCheck = false)
+void clearPsuFaultLeds(const bool overrideChassisOnCheck = false)
 {
     // sufficiently large number within which the LED service should come up.
     static constexpr auto MAX_RETRY = 120;
 
     if (utility::isChassisOn())
     {
-        std::cout
-            << "Abort clearing PSU fault LED. Chassis is in power on state."
-            << std::endl;
+        if (!overrideChassisOnCheck)
+        {
+            std::cout
+                << "Abort clearing PSU fault LEDs because the chassis is powered on."
+                << std::endl;
 
-        return;
+            return;
+        }
+
+        utility::createPel(
+            __FILE__, __FUNCTION__,
+            "Clearing PSU fault LEDs while chassis is on",
+            "xyz.openbmc_project.Common.Error.NotAllowed",
+            "xyz.openbmc_project.Logging.Entry.Level.Informational");
     }
 
     std::vector<std::string> interfaces{

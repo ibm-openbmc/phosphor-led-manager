@@ -13,18 +13,25 @@
  *
  * @param[in] overrideChassisOnCheck - Flag to override chassis on check.
  */
-void setLEDForGuardedFru(
-    [[maybe_unused]] const bool overrideChassisOnCheck = false)
+void setLEDForGuardedFru(const bool overrideChassisOnCheck = false)
 {
     std::cout << "Trigger set LED for guarded FRUs" << std::endl;
 
     if (utility::isChassisOn())
     {
-        std::cout
-            << "Abort set led for guarded FRUs as chassis is in power on state."
-            << std::endl;
+        if (!overrideChassisOnCheck)
+        {
+            std::cout
+                << "Abort set LED for guarded FRUs as chassis is in power on state."
+                << std::endl;
 
-        return;
+            return;
+        }
+        utility::createPel(
+            __FILE__, __FUNCTION__,
+            "Setting LEDs for guarded FRUs while chassis is on",
+            "xyz.openbmc_project.Common.Error.NotAllowed",
+            "xyz.openbmc_project.Logging.Entry.Level.Informational");
     }
 
     std::vector<std::string> interfaces{

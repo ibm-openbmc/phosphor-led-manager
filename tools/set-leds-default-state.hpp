@@ -25,18 +25,26 @@ void setAssertedToFalse(const std::string ObjectPath)
  *
  * @param[in] overrideChassisOnCheck - Flag to override chassis on check.
  */
-void setLedsDefaultState(
-    [[maybe_unused]] const bool overrideChassisOnCheck = false)
+void setLedsDefaultState(const bool overrideChassisOnCheck = false)
 {
     std::cout << "Trigger set default state for LEDs." << std::endl;
 
     if (utility::isChassisOn())
     {
-        std::cout
-            << "Abort setting LEDs to default as chassis is in power on state."
-            << std::endl;
+        if (!overrideChassisOnCheck)
+        {
+            std::cout
+                << "Abort setting LEDs to default as chassis is in power on state."
+                << std::endl;
 
-        return;
+            return;
+        }
+
+        utility::createPel(
+            __FILE__, __FUNCTION__,
+            "Setting LEDs to default state while chassis is on",
+            "xyz.openbmc_project.Common.Error.NotAllowed",
+            "xyz.openbmc_project.Logging.Entry.Level.Informational");
     }
 
     // set default state for power button.

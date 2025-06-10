@@ -265,4 +265,46 @@ void notifyPIM(ObjectMap&& objectMap)
                   << e.what() << std::endl;
     }
 }
+
+/**
+ * @brief API to create a PEL
+ *
+ * This API makes synchronous call to phosphor-logging Create method.
+ *
+ * @param[in] i_fileName - File name.
+ * @param[in] i_funcName - Function name.
+ * @param[in] i_description - Error description.
+ * @param[in] i_errorType - Error type as per PEL message registry.
+ * @param[in] i_severity - Severity level.
+ *
+ */
+void createPel(const std::string& i_fileName,
+        const std::string& i_funcName,
+        const std::string& i_description, const std::string& i_errorType, const std::string& i_severity) noexcept
+{
+    try
+    {
+        if(i_fileName.empty() || i_funcName.empty() || i_description.empty() || i_errorType.empty() || i_severity.empty())
+        {
+            throw std::runtime_error("Invalid parameters for creating PEL");
+        }
+
+        auto l_bus = sdbusplus::bus::new_default();
+        auto l_method =
+            l_bus.new_method_call("xyz.openbmc_project.Logging",
+                                  "/xyz/openbmc_project/logging",
+                                  "xyz.openbmc_project.Logging.Create", "Create");
+
+        const std::map<std::string, std::string> l_additionalData{{"FileName", i_fileName},
+            {"FunctionName", i_funcName},
+            {"DESCRIPTION", i_description}};
+
+        l_method.append(i_errorType,i_severity,l_additionalData);
+        l_bus.call(l_method);
+    }
+    catch(const std::exception& l_ex)
+    {
+        std::cerr << "Failed to create PEL. Error: " << std::string(l_ex.what()) << std::endl;
+    }
+}
 } // namespace utility
