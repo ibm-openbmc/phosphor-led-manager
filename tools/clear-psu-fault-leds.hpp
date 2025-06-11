@@ -15,8 +15,11 @@
  * which the call to fetch endpoints would fail.
  * Explicit dependency for LED is not added in service as it will delay the
  * execution further and clearing of PSU LED should happen asap.
+ *
+ * @param[in] overrideChassisOnCheck - Flag to override chassis on check.
  */
-void clearPsuFaultLeds()
+void clearPsuFaultLeds(
+    [[maybe_unused]] const bool overrideChassisOnCheck = false)
 {
     // sufficiently large number within which the LED service should come up.
     static constexpr auto MAX_RETRY = 120;

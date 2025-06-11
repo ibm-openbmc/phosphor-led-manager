@@ -15,8 +15,10 @@
  * - Operational status of the FRU is handled by some other module.
  *
  * @param[in] isFunctional - States if the FRUs are functional or not.
+ * @param[in] overrideChassisOnCheck - Flag to override chassis on check.
  */
-void toggleFaultLeds(const bool isFunctional)
+void toggleFaultLeds(const bool isFunctional,
+                     [[maybe_unused]] const bool overrideChassisOnCheck = false)
 {
     std::cout << "Trigger toggling of fault LEDs with value: " << isFunctional
               << std::endl;

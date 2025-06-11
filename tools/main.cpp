@@ -33,6 +33,9 @@ int main(int argc, char** argv)
     auto clearPsuFaultLed = app.add_flag("-c, --clearPsuFaultLed",
                                          "Clears PSU fault LEDs.");
 
+    auto overrideChassisOnCheckOption = app.add_flag(
+        "-x, --overrideChassisOnCheck", "Flag to override chassis on check.");
+
     std::string objectPath;
     auto objectPathOption = app.add_option("-o, --object", objectPath,
                                            "Object path of the FRU.");
@@ -47,22 +50,23 @@ int main(int argc, char** argv)
     {
         if (*toggleFaultLed)
         {
-            toggleFaultLeds(isFunctional);
+            toggleFaultLeds(isFunctional,
+                            !overrideChassisOnCheckOption->empty());
         }
 
         if (*setGuardedFruLeds)
         {
-            setLEDForGuardedFru();
+            setLEDForGuardedFru(!overrideChassisOnCheckOption->empty());
         }
 
         if (*defaultLedsSate)
         {
-            setLedsDefaultState();
+            setLedsDefaultState(!overrideChassisOnCheckOption->empty());
         }
 
         if (*clearPsuFaultLed)
         {
-            clearPsuFaultLeds();
+            clearPsuFaultLeds(!overrideChassisOnCheckOption->empty());
         }
 
         if (!syncFaultLed->empty())
