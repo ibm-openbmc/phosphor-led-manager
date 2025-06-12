@@ -54,6 +54,15 @@ void toggleFaultLeds(const bool isFunctional)
 
     for (const auto& [objectPath, serviceInterfaceMap] : subTree)
     {
+        // only handle paths which are hosted by PIM
+        if (!serviceInterfaceMap.contains(
+                "xyz.openbmc_project.Inventory.Manager"))
+        {
+            // If this object path is not hosted by inventory manager service,
+            // do not take any action.
+            continue;
+        }
+
         if (std::any_of(skipOperationalStatusForFRUs.cbegin(),
                         skipOperationalStatusForFRUs.cend(),
                         [&objectPath](const std::string& aFru) {
@@ -71,6 +80,13 @@ void toggleFaultLeds(const bool isFunctional)
 
         if (std::any_of(frusWithoutLED.cbegin(), frusWithoutLED.cend(),
                         [&objectPath](const std::string& aFru) {
+            // should skip for pcie_cards base path and connectors, not for cxp
+            // ports as they have LEDs
+            if (objectPath.find("cxp_top") != std::string::npos ||
+                objectPath.find("cxp_bot") != std::string::npos)
+            {
+                return false;
+            }
             return objectPath.find(aFru) != std::string::npos;
         }))
         {
