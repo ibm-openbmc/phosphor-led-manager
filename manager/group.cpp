@@ -47,7 +47,7 @@ bool Group::asserted(bool value)
     auto result = manager.setGroupState(path, value, ledsAssert, ledsDeAssert);
 
     // Store asserted state
-    serialize.storeGroups(path, result);
+    serialize.storeGroups(path, result)
 
 #ifdef IBM_SAI
     // When setting the associated FRU's operational status for
