@@ -22,8 +22,11 @@ void setAssertedToFalse(const std::string ObjectPath)
  * accordingly. Enclosure identify - need not be persisted.
  * Explicitly Asserted being set as there is no operational status associated
  * these LEDs.
+ *
+ * @param[in] overrideChassisOnCheck - Flag to override chassis on check.
  */
-void setLedsDefaultState()
+void setLedsDefaultState(
+    [[maybe_unused]] const bool overrideChassisOnCheck = false)
 {
     std::cout << "Trigger set default state for LEDs." << std::endl;
 

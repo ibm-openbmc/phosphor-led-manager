@@ -10,8 +10,11 @@
  * executed.
  * It checks for existing guard records and set LEDs asserted state for them as
  * true if required.
+ *
+ * @param[in] overrideChassisOnCheck - Flag to override chassis on check.
  */
-void setLEDForGuardedFru()
+void setLEDForGuardedFru(
+    [[maybe_unused]] const bool overrideChassisOnCheck = false)
 {
     std::cout << "Trigger set LED for guarded FRUs" << std::endl;
 
