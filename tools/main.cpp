@@ -41,6 +41,9 @@ int main(int argc, char** argv)
                      "Syncs fault LEDs to functional state of the FRU.")
             ->needs(objectPathOption);
 
+    auto dumpLedObjectPaths = app.add_flag(
+        "-D, --dumpLedObjectPaths", "Dumps LED object paths on console.");
+
     CLI11_PARSE(app, argc, argv);
 
     try
@@ -69,6 +72,9 @@ int main(int argc, char** argv)
         {
             doSyncFaultLed(objectPath);
         }
+
+        if (!dumpLedObjectPaths->empty())
+        {}
     }
     catch (const std::exception& ex)
     {
