@@ -5,10 +5,60 @@
 #include "toggle-fault-leds.hpp"
 
 #include <CLI/CLI.hpp>
+#include <nlohmann/json.hpp>
+
+#include <filesystem>
+#include <fstream>
+
+/**
+ * @brief An API to dump asserted LED paths to console.
+ *
+ * @returns 0 for success, -1 for failure.
+ */
+int dumpAssertedLedObjectPaths()
+{
+    const std::string savedGroupsPath =
+        "/var/lib/phosphor-led-manager/savedGroups";
+    try
+    {
+        if (std::filesystem::exists(savedGroupsPath))
+        {
+            std::ifstream ledsFilePath(savedGroupsPath);
+
+            if (!ledsFilePath)
+            {
+                throw std::runtime_error(
+                    "Unable to open saved groups file. Can't dump LED path(s).");
+            }
+
+            const nlohmann::json parsedLedFile =
+                nlohmann::json::parse(ledsFilePath);
+
+            for (const auto& ledPath : parsedLedFile["value0"])
+            {
+                std::cout << ledPath << std::endl;
+            }
+        }
+        else
+        {
+            throw std::runtime_error(
+                "Saved groups file is not present. Can't dump LED path(s).");
+        }
+    }
+    catch (const std::exception& ex)
+    {
+        std::cerr << "Error while trying to dump asserted led paths. Error : "
+                  << ex.what() << std::endl;
+
+        return -1;
+    }
+
+    return 0;
+}
 
 int main(int argc, char** argv)
 {
-    CLI::App app{"led-tool - A tool to perform opeartion(s) over LEDs."};
+    CLI::App app{"led-tool - A tool to perform operation(s) over LEDs."};
 
     bool isFunctional = true;
     auto functional = app.add_option(
@@ -47,6 +97,11 @@ int main(int argc, char** argv)
     auto dumpLedObjectPaths = app.add_flag(
         "-D, --dumpLedObjectPaths", "Dumps LED object paths on console.");
 
+    auto dumpAssertedLeds =
+        app.add_flag("-a, --dumpAssertedLeds",
+                     "Dumps asserted LED object paths to the console.")
+            ->needs(dumpLedObjectPaths);
+
     CLI11_PARSE(app, argc, argv);
 
     try
@@ -78,7 +133,12 @@ int main(int argc, char** argv)
         }
 
         if (!dumpLedObjectPaths->empty())
-        {}
+        {
+            if (!dumpAssertedLeds->empty())
+            {
+                return dumpAssertedLedObjectPaths();
+            }
+        }
     }
     catch (const std::exception& ex)
     {
