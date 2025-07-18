@@ -9,6 +9,7 @@
 
 #include <filesystem>
 #include <fstream>
+#include <iomanip>
 
 /**
  * @brief An API to dump asserted LED paths to console.
@@ -49,6 +50,75 @@ int dumpAssertedLedObjectPaths()
     {
         std::cerr << "Error while trying to dump asserted led paths. Error : "
                   << ex.what() << std::endl;
+
+        return -1;
+    }
+
+    return 0;
+}
+
+/**
+ * @brief An API to dump LED path with inventory path.
+ *
+ * This API dumps lED path with its associated inventory paths on the console.
+ *
+ * @returns 0 for success, -1 for failure.
+ */
+int dumpLedPathWithInventoryPath()
+{
+    try
+    {
+        std::cout << std::setfill('=') << std::setw(150) << "" << std::endl;
+
+        std::cout << std::left << std::setw(70) << std::setfill(' ')
+                  << "LED path"
+                  << " | " << std::left << std::setw(80) << std::setfill(' ')
+                  << "Inventory Path" << std::endl;
+
+        std::cout << std::setfill('=') << std::setw(150) << "" << std::endl;
+
+        auto objectSubTreeMap = utility::getObjectSubtreeForInterfaces(
+            "/xyz/openbmc_project/inventory/system", 0,
+            {"xyz.openbmc_project.Association.Definitions"});
+
+        for (const auto& objectInterfaceMap : objectSubTreeMap)
+        {
+            const std::string& inventoryPath = objectInterfaceMap.first;
+
+            auto faultLedPath = utility::GetAssociatedSubTreePaths(
+                std::string(inventoryPath + "/fault_identifying"),
+                std::string("/"), 0, {});
+
+            auto identifyLedPath = utility::GetAssociatedSubTreePaths(
+                std::string(inventoryPath + "/identifying"), std::string("/"),
+                0, {});
+
+            for (const auto& ledPath : faultLedPath)
+            {
+                std::cout << std::left << std::setw(70) << std::setfill(' ')
+                          << ledPath << " | " << std::left << std::setw(80)
+                          << std::setfill(' ') << inventoryPath << std::endl;
+
+                std::cout << std::setfill('-') << std::setw(150) << ""
+                          << std::endl;
+            }
+
+            for (const auto& ledPath : identifyLedPath)
+            {
+                std::cout << std::left << std::setw(70) << std::setfill(' ')
+                          << ledPath << " | " << std::left << std::setw(80)
+                          << std::setfill(' ') << inventoryPath << std::endl;
+
+                std::cout << std::setfill('-') << std::setw(150) << ""
+                          << std::endl;
+            }
+        }
+    }
+    catch (const std::exception& e)
+    {
+        std::cerr
+            << "Error while dumping LED paths with inventory paths to the console. Error : "
+            << e.what() << std::endl;
 
         return -1;
     }
@@ -102,6 +172,12 @@ int main(int argc, char** argv)
                      "Dumps asserted LED object paths to the console.")
             ->needs(dumpLedObjectPaths);
 
+    auto dumpInventoryPathWithLedPath =
+        app.add_flag(
+               "-i, --dumpInventoryPathWithLedPath",
+               "Dumps LED path with its associated inventory path to the console.")
+            ->needs(dumpLedObjectPaths);
+
     CLI11_PARSE(app, argc, argv);
 
     try
@@ -137,6 +213,11 @@ int main(int argc, char** argv)
             if (!dumpAssertedLeds->empty())
             {
                 return dumpAssertedLedObjectPaths();
+            }
+
+            if (!dumpInventoryPathWithLedPath->empty())
+            {
+                return dumpLedPathWithInventoryPath();
             }
         }
     }
