@@ -7,6 +7,7 @@
 
 #include <filesystem>
 #include <fstream>
+#include <vector>
 
 /**
  * @brief An API to dump asserted LED paths to console.
@@ -123,8 +124,61 @@ int dumpLedPathWithInventoryPath()
     return 0;
 }
 
+/**
+ * @brief API to check is field mode enabled.
+ *
+ * @return true, if field mode is enabled. otherwise false.
+ */
+bool isFieldModeEnabled() noexcept
+{
+    try
+    {
+        std::vector<std::string> l_cmdOutput;
+        std::array<char, 256> l_buffer;
+
+        std::string l_cmd = "/sbin/fw_printenv fieldmode";
+
+        std::unique_ptr<FILE, int (*)(FILE*)> l_cmdPipe(
+            popen(l_cmd.c_str(), "r"), pclose);
+
+        if (!l_cmdPipe)
+        {
+            throw std::runtime_error("popen failed, error:" +
+                                     std::string(strerror(errno)));
+        }
+        while (fgets(l_buffer.data(), l_buffer.size(), l_cmdPipe.get()) !=
+               nullptr)
+        {
+            l_cmdOutput.emplace_back(l_buffer.data());
+        }
+
+        if (l_cmdOutput.size() > 0)
+        {
+            std::transform(l_cmdOutput[0].begin(), l_cmdOutput[0].end(),
+                           l_cmdOutput[0].begin(), [](unsigned char l_char) {
+                return std::tolower(l_char);
+            });
+
+            // Remove the new line character from the string.
+            l_cmdOutput[0].erase(l_cmdOutput[0].length() - 1);
+
+            return l_cmdOutput[0] == "fieldmode=true" ? true : false;
+        }
+    }
+    catch (const std::exception& l_ex)
+    {}
+
+    return false;
+}
+
 int main(int argc, char** argv)
 {
+    if (!isFieldModeEnabled())
+    {
+        std::cerr << "LED tool enabled only in fieldmode." << std::endl;
+        return -1;
+    }
+
     CLI::App app{"led-tool - A tool to perform operation(s) over LEDs."};
 
     bool isFunctional = true;
