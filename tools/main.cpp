@@ -2,11 +2,14 @@
 #include "sync-fault-leds.hpp"
 #include "toggle-fault-leds.hpp"
 
+#include <systemd/sd-bus.h>
+
 #include <CLI/CLI.hpp>
 #include <nlohmann/json.hpp>
 
 #include <filesystem>
 #include <fstream>
+#include <map>
 #include <vector>
 
 /**
@@ -171,6 +174,82 @@ bool isFieldModeEnabled() noexcept
     return false;
 }
 
+/**
+ * @brief An API to create a PEL.
+ *
+ * This API makes synchronous call to phosphor-logging Create method.
+ *
+ * @param[in] errorType - Event message name.
+ * @param[in] severity - Severity of the event.
+ * @param[in] fileName - File name.
+ * @param[in] description - Error description.
+ */
+void createPel(const std::string& errorType, const std::string& severity,
+               const std::string& fileName,
+               const std::string& description) noexcept
+{
+    try
+    {
+        if (errorType.empty() || severity.empty() || fileName.empty() ||
+            description.empty())
+        {
+            throw std::runtime_error(
+                "Input(s) passed to create PEL is found empty");
+        }
+
+        std::map<std::string, std::string> additionalData{
+            {"FILENAME", fileName}, {"DESCRIPTION", description}};
+
+        auto bus = sdbusplus::bus::new_default();
+        auto method = bus.new_method_call(
+            "xyz.openbmc_project.Logging", "/xyz/openbmc_project/logging",
+            "xyz.openbmc_project.Logging.Create", "Create");
+        method.append(errorType, severity, additionalData);
+        bus.call(method);
+    }
+    catch (const sdbusplus::exception::SdBusError& ex)
+    {
+        std::cerr << "PEL creation failed with an error: " +
+                         std::string(ex.what())
+                  << std::endl;
+    }
+}
+
+/**
+ * @brief API to log a PEL if just not help command.
+ *
+ * The API logs a PEL when led-tool being used in the system.
+ * PEL will be skipped in case help command used.
+ *
+ * @param[in] argc - Number of arguments recieved.
+ * @param[in] argv - Arrguments passed.
+ */
+void logPelIfNotHelp(int argc, char** argv) noexcept
+{
+    bool logPel = true;
+    std::string cmd{"user entered command: "};
+
+    for (auto count = 0; count < argc; count++)
+    {
+        cmd += argv[count];
+
+        if (argv[count] == std::string("--help") ||
+            argv[count] == std::string("-h") || argc == 1)
+        {
+            logPel = false;
+        }
+
+        cmd += (count < argc - 1) ? " " : "";
+    }
+
+    if (logPel)
+    {
+        createPel("com.ibm.Info.LedTool",
+                  "xyz.openbmc_project.Logging.Entry.Level.Informational",
+                  __FILE__, cmd);
+    }
+}
+
 int main(int argc, char** argv)
 {
     if (!isFieldModeEnabled())
@@ -178,6 +257,8 @@ int main(int argc, char** argv)
         std::cerr << "LED tool enabled only in fieldmode." << std::endl;
         return -1;
     }
+
+    logPelIfNotHelp(argc, argv);
 
     CLI::App app{"led-tool - A tool to perform operation(s) over LEDs."};
 
