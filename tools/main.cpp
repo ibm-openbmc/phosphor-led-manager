@@ -1,4 +1,5 @@
 #include "clear-psu-fault-leds.hpp"
+#include "dump-led-object-paths.hpp"
 #include "set-guarded-fru-leds.hpp"
 #include "set-leds-default-state.hpp"
 #include "sync-fault-leds.hpp"
@@ -219,6 +220,8 @@ int main(int argc, char** argv)
             {
                 return dumpLedPathWithInventoryPath();
             }
+
+            dumpLEDObjectPaths();
         }
     }
     catch (const std::exception& ex)
