@@ -188,28 +188,23 @@ int main(int argc, char** argv)
             toggleFaultLeds(isFunctional,
                             !overrideChassisOnCheckOption->empty());
         }
-
-        if (*setGuardedFruLeds)
+        else if (*setGuardedFruLeds)
         {
             setLEDForGuardedFru(!overrideChassisOnCheckOption->empty());
         }
-
-        if (*defaultLedsSate)
+        else if (*defaultLedsSate)
         {
             setLedsDefaultState(!overrideChassisOnCheckOption->empty());
         }
-
-        if (*clearPsuFaultLed)
+        else if (*clearPsuFaultLed)
         {
             clearPsuFaultLeds(!overrideChassisOnCheckOption->empty());
         }
-
-        if (!syncFaultLed->empty())
+        else if (!syncFaultLed->empty())
         {
             doSyncFaultLed(objectPath);
         }
-
-        if (!dumpLedObjectPaths->empty())
+        else if (!dumpLedObjectPaths->empty())
         {
             if (!dumpAssertedLeds->empty())
             {
