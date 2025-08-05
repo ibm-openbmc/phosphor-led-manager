@@ -18,7 +18,7 @@
  * @param[in] overrideChassisOnCheck - Flag to override chassis on check.
  */
 void toggleFaultLeds(const bool isFunctional,
-                     [[maybe_unused]] const bool overrideChassisOnCheck = false)
+                     const bool overrideChassisOnCheck = false)
 {
     std::cout << "Trigger toggling of fault LEDs with value: " << isFunctional
               << std::endl;
@@ -33,10 +33,19 @@ void toggleFaultLeds(const bool isFunctional,
 
     if (utility::isChassisOn())
     {
-        std::cout << "Abort toggling fault LED. Chassis is in power on state."
-                  << std::endl;
+        if (!overrideChassisOnCheck)
+        {
+            std::cout
+                << "Abort toggling fault LEDs. Chassis is in power on state."
+                << std::endl;
 
-        return;
+            return;
+        }
+
+        utility::createPel(
+            __FILE__, __FUNCTION__, "Toggle Fault LEDs while chassis is on",
+            "xyz.openbmc_project.Common.Error.NotAllowed",
+            "xyz.openbmc_project.Logging.Entry.Level.Informational");
     }
 
     std::vector<std::string> interfaces{
