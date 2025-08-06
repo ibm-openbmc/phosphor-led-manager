@@ -227,18 +227,15 @@ int main(int argc, char** argv)
         {
             toggleFaultLeds(isFunctional);
         }
-
-        if (*clearPsuFaultLed)
+        else if (*clearPsuFaultLed)
         {
             clearPsuFaultLeds();
         }
-
-        if (!syncFaultLed->empty())
+        else if (!syncFaultLed->empty())
         {
             doSyncFaultLed(objectPath);
         }
-
-        if (!dumpLedObjectPaths->empty())
+        else if (!dumpLedObjectPaths->empty())
         {
             if (!dumpAssertedLeds->empty())
             {
