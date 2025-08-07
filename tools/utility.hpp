@@ -265,4 +265,61 @@ void notifyPIM(ObjectMap&& objectMap)
                   << e.what() << std::endl;
     }
 }
+
+/**
+ * @brief API to check if field mode enabled.
+ *
+ * @return true, if field mode is enabled. otherwise false.
+ */
+bool isFieldModeEnabled() noexcept
+{
+    try
+    {
+        std::vector<std::string> l_cmdOutput;
+        std::array<char, 256> l_buffer;
+
+        const std::string l_cmd = "/sbin/fw_printenv fieldmode";
+
+        std::unique_ptr<FILE, int (*)(FILE*)> l_cmdPipe(
+            popen(l_cmd.c_str(), "r"), pclose);
+
+        if (!l_cmdPipe)
+        {
+            throw std::runtime_error("popen failed, error:" +
+                                     std::string(strerror(errno)));
+        }
+
+        // Read the command output
+        while (fgets(l_buffer.data(), l_buffer.size(), l_cmdPipe.get()) !=
+               nullptr)
+        {
+            l_cmdOutput.emplace_back(l_buffer.data());
+        }
+
+        // Convert the read command output into lowercase
+        if (l_cmdOutput.size() > 0)
+        {
+            std::transform(l_cmdOutput[0].begin(), l_cmdOutput[0].end(),
+                           l_cmdOutput[0].begin(), [](unsigned char l_char) {
+                return std::tolower(l_char);
+            });
+
+            // Remove the new line character from the string.
+            l_cmdOutput[0].erase(l_cmdOutput[0].length() - 1);
+
+            return l_cmdOutput[0] == "fieldmode=true" ? true : false;
+        }
+    }
+    catch (const std::exception& l_ex)
+    {
+        std::cout << "Error while reading fieldmode: " << l_ex.what() << std::endl;
+    }
+
+    return false;
+}
+
+bool runningAsSystemDService() noexcept
+{
+    return std::getenv("SYSTEMD_EXEC_PID") != nullptr ? true : false;
+}
 } // namespace utility

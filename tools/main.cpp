@@ -4,10 +4,12 @@
 #include "set-leds-default-state.hpp"
 #include "sync-fault-leds.hpp"
 #include "toggle-fault-leds.hpp"
+#include "utility.hpp"
 
 #include <CLI/CLI.hpp>
 #include <nlohmann/json.hpp>
 
+#include <cstdlib>
 #include <filesystem>
 #include <fstream>
 #include <iomanip>
@@ -129,6 +131,9 @@ int dumpLedPathWithInventoryPath()
 
 int main(int argc, char** argv)
 {
+    const bool fieldmodeEnabled = utility::isFieldModeEnabled();
+    const bool isSystemdService = utility::runningAsSystemDService();
+
     CLI::App app{"led-tool - A tool to perform operation(s) over LEDs."};
 
     bool isFunctional = true;
@@ -183,6 +188,15 @@ int main(int argc, char** argv)
 
     try
     {
+        if (!isSystemdService && !fieldmodeEnabled &&
+            (!toggleFaultLed->empty() || !setGuardedFruLeds->empty() ||
+             !defaultLedsSate->empty() || !clearPsuFaultLed->empty() ||
+             !syncFaultLed->empty()))
+        {
+            std::cerr << "This option enabled only in field mode." << std::endl;
+            return -1;
+        }
+
         if (*toggleFaultLed)
         {
             toggleFaultLeds(isFunctional,
