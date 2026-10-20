@@ -33,7 +33,7 @@ using DbusProperty = std::string;
 using PropertyMap = std::unordered_map<DbusProperty, PropertyValue>;
 
 using ObjectMap =
-    std::map<sdbusplus::message::object_path,
+    std::map<sdbusplus::object_path,
              std::map<std::string, std::map<std::string, std::variant<bool>>>>;
 
 /**

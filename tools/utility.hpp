@@ -59,8 +59,8 @@ MapperResponse
  */
 using ListOfObjectPaths = std::vector<std::string>;
 ListOfObjectPaths GetAssociatedSubTreePaths(
-    const sdbusplus::message::object_path& associationPath,
-    const sdbusplus::message::object_path& root, const int32_t depth,
+    const sdbusplus::object_path& associationPath,
+    const sdbusplus::object_path& root, const int32_t depth,
     const std::vector<std::string>& interfaces)
 {
     auto bus = sdbusplus::bus::new_default();
@@ -187,7 +187,7 @@ bool isChassisOn()
 }
 
 using ObjectMap =
-    std::map<sdbusplus::message::object_path,
+    std::map<sdbusplus::object_path,
              std::map<std::string, std::map<std::string, std::variant<bool>>>>;
 
 /**
